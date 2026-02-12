@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const { sendTelegramMessage, formatOrderNotification } = require('../telegram');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
@@ -402,6 +403,7 @@ router.post('/reviews', async (req, res) => {
 });
 
 // ============ ORDERS ============
+// ============ ORDERS ============
 router.post('/orders', async (req, res) => {
   const { user_id, items, total, shipping, payment_method } = req.body;
   
@@ -426,6 +428,18 @@ router.post('/orders', async (req, res) => {
     shipping.zip,
     payment_method
   ]);
+
+  // Send Telegram notification
+  try {
+    const order = await db.getAsync('SELECT * FROM orders WHERE id = ?', [result.lastID]);
+    if (order) {
+      const message = formatOrderNotification(order);
+      await sendTelegramMessage(message);
+    }
+  } catch (err) {
+    console.error('Failed to send Telegram notification:', err);
+    // Don't fail the order creation if Telegram notification fails
+  }
 
   res.json({ success: true, order_id: result.lastID });
 });
