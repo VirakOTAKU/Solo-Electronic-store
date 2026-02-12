@@ -106,7 +106,7 @@
             <div style="background: var(--light); padding: 30px; border-radius: 12px; margin-bottom: 40px;">
               <ol style="margin-left: 20px; line-height: 2;">
                 <li>Choose an RSS reader application (Feedly, Inoreader, NewsBlur, etc.)</li>
-                <li>Copy our RSS feed URL: <code style="background: #fff; padding: 5px 10px; border-radius: 4px; color: var(--primary-color); font-weight: 600;">http://localhost:3000/feed.xml</code></li>
+                <li>Copy our RSS feed URL: <code style="background: #fff; padding: 5px 10px; border-radius: 4px; color: var(--primary-color); font-weight: 600;"><span id="feed-url">http://localhost:3000/feed.xml</span></code></li>
                 <li>Add the feed URL to your RSS reader</li>
                 <li>Start receiving updates automatically</li>
               </ol>
@@ -117,7 +117,7 @@
               <a href="/feed.xml" class="btn btn-primary" target="_blank">
                 📄 View RSS Feed
               </a>
-              <a href="https://feedly.com/i/subscription/feed/http://localhost:3000/feed.xml" class="btn btn-outline" target="_blank">
+              <a id="feedly-link" href="https://feedly.com/i/subscription/feed/" class="btn btn-outline" target="_blank">
                 Subscribe via Feedly
               </a>
             </div>
@@ -217,5 +217,19 @@
   </footer>
 
   <script src="/js/app.js"></script>
+  <script>
+    // Set dynamic RSS feed URL
+    const feedUrl = `${window.location.origin}/feed.xml`;
+    const feedUrlElement = document.getElementById('feed-url');
+    const feedlyLink = document.getElementById('feedly-link');
+    
+    if (feedUrlElement) {
+      feedUrlElement.textContent = feedUrl;
+    }
+    
+    if (feedlyLink) {
+      feedlyLink.href = `https://feedly.com/i/subscription/feed/${encodeURIComponent(feedUrl)}`;
+    }
+  </script>
 </body>
 </html>
