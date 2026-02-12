@@ -173,6 +173,20 @@ app.get('/feed.xml', async (req, res) => {
       }
     }
 
+    // Auto-create admin account if it doesn't exist
+    const bcrypt = require('bcryptjs');
+    const adminUser = await db.getAsync('SELECT id FROM users WHERE email = ?', ['admin@chenelectronic.com']);
+    if (!adminUser) {
+      const hashedPassword = await bcrypt.hash('admin123', 10);
+      await db.runAsync(
+        'INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
+        ['Admin User', 'admin@chenelectronic.com', hashedPassword]
+      );
+      console.log('✅ Admin account auto-created:');
+      console.log('   Email: admin@chenelectronic.com');
+      console.log('   Password: admin123');
+    }
+
     // Check if products exist, if not seed them
     const row = await db.getAsync('SELECT COUNT(*) as count FROM products');
     if (row.count === 0) {
