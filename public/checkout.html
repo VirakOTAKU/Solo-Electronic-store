@@ -726,8 +726,12 @@
     
     function confirmABAOrder() {
       if (pendingOrderData) {
-        closeABAQR();
-        submitOrderData(pendingOrderData);
+        const orderToSubmit = pendingOrderData;
+        pendingOrderData = null;
+        document.getElementById('abaQRModal').classList.remove('show');
+        submitOrderData(orderToSubmit);
+      } else {
+        showNotification('No pending order found. Please try again.', 'error');
       }
     }
     
@@ -736,6 +740,7 @@
       const modal = document.getElementById('abaQRModal');
       if (event.target === modal) {
         modal.classList.remove('show');
+        pendingOrderData = null;
       }
     }
   </script>
