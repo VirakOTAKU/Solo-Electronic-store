@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart - Chen Electronic</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="header-top">
+      <div class="container">
+        <div>📧 support@chenelectronic.com | 📞 +855 23 964 285</div>
+        <div>
+          <a href="/about">About Us</a>
+          <a href="/contact">Contact</a>
+          <a href="/account" class="user-link">👤 Login</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="header-main">
+      <div class="container">
+        <a href="/" class="logo" style="display: flex; align-items: center; gap: 10px;">
+          <img src="/img/Chen.png" alt="Chen Logo" style="height: 50px; width: auto;">
+          <span style="font-weight: bold; font-size: 20px;">Chen<span style="color: #e74c3c;">Electronic</span></span>
+        </a>
+        
+        <form class="search-bar">
+          <input type="text" placeholder="Search for products...">
+          <button type="submit">🔍</button>
+        </form>
+        
+        <div class="header-actions">
+          <a href="/cart">
+            🛒 Cart
+            <span class="cart-count">0</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <nav>
+      <div class="container">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/shop">Shop</a></li>
+          <li><a href="/shop?category=Smartphones">Smartphones</a></li>
+          <li><a href="/shop?category=Laptops">Laptops</a></li>
+          <li><a href="/shop?category=Audio">Audio</a></li>
+          <li><a href="/shop?category=Gaming">Gaming</a></li>
+          <li><a href="/shop?featured=1">Featured</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <h1>🛒 Shopping Cart</h1>
+        
+        <div id="cart-content" style="margin-top: 40px;">
+          <!-- Cart items will be rendered here -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Solo<span style="color: var(--secondary-color);">E-Com</span></h3>
+          <p>Your trusted destination for electronics and gadgets.</p>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/shop">Shop</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/contact">Contact Us</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Customer Service</h3>
+          <ul>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Use</a></li>
+            <li><a href="/dmca">DMCA</a></li>
+            <li><a href="/rss">RSS Feed</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Newsletter</h3>
+          <form class="newsletter-form">
+            <input type="email" placeholder="Your email" required>
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 Chen Electronic. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+  <script>
+    function renderCart() {
+      const cart = getCart();
+      const container = document.getElementById('cart-content');
+      
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 60px 20px;">
+            <h2 style="color: var(--gray); margin-bottom: 20px;">Your cart is empty</h2>
+            <p style="color: var(--gray); margin-bottom: 30px;">Add some products to get started!</p>
+            <a href="/shop" class="btn btn-primary">Continue Shopping</a>
+          </div>
+        `;
+        return;
+      }
+
+      const subtotal = getCartTotal();
+      const shipping = subtotal > 100 ? 0 : 15;
+      const tax = subtotal * 0.1;
+      const total = subtotal + shipping + tax;
+
+      const html = `
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 40px;">
+          <!-- Cart Items -->
+          <div>
+            ${cart.map(item => {
+              const price = item.sale_price || item.price;
+              const itemTotal = price * item.quantity;
+              
+              return `
+                <div class="card" style="padding: 25px; margin-bottom: 20px;">
+                  <div style="display: grid; grid-template-columns: 120px 1fr auto; gap: 25px; align-items: center;">
+                    <img src="${item.image}" alt="${item.name}" style="width: 100%; border-radius: 8px;" onerror="this.src='https://via.placeholder.com/120?text=No+Image'">
+                    
+                    <div>
+                      <h3 style="margin-bottom: 10px;">
+                        <a href="/product/${item.id}" style="color: var(--dark); text-decoration: none;">${item.name}</a>
+                      </h3>
+                      <p style="color: var(--gray); font-size: 0.9rem; margin-bottom: 10px;">${item.brand} | ${item.category}</p>
+                      <p style="font-size: 1.25rem; font-weight: 600; color: var(--primary-color);">${formatPrice(price)}</p>
+                      
+                      <div style="margin-top: 15px; display: flex; align-items: center; gap: 15px;">
+                        <label style="font-weight: 600;">Quantity:</label>
+                        <input 
+                          type="number" 
+                          value="${item.quantity}" 
+                          min="1" 
+                          max="10"
+                          style="width: 80px; padding: 8px; border: 2px solid var(--border); border-radius: 8px;"
+                          onchange="updateCartQuantity(${item.id}, this.value); renderCart();"
+                        >
+                      </div>
+                    </div>
+                    
+                    <div style="text-align: right;">
+                      <p style="font-size: 1.5rem; font-weight: 700; margin-bottom: 20px;">${formatPrice(itemTotal)}</p>
+                      <button class="btn btn-danger" onclick="removeFromCart(${item.id}); renderCart();">
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+            
+            <div style="margin-top: 30px; display: flex; gap: 15px;">
+              <a href="/shop" class="btn btn-outline">← Continue Shopping</a>
+              <button class="btn btn-danger" onclick="if(confirm('Clear all items?')) { clearCart(); renderCart(); }">
+                Clear Cart
+              </button>
+            </div>
+          </div>
+
+          <!-- Cart Summary -->
+          <div>
+            <div class="card" style="padding: 30px; position: sticky; top: 100px;">
+              <h2 style="margin-bottom: 25px;">Order Summary</h2>
+              
+              <div style="border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                  <span style="color: var(--gray);">Subtotal:</span>
+                  <strong>${formatPrice(subtotal)}</strong>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                  <span style="color: var(--gray);">Shipping:</span>
+                  <strong>${shipping === 0 ? 'FREE' : formatPrice(shipping)}</strong>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                  <span style="color: var(--gray);">Tax (10%):</span>
+                  <strong>${formatPrice(tax)}</strong>
+                </div>
+              </div>
+              
+              <div style="display: flex; justify-content: space-between; margin-bottom: 30px; font-size: 1.5rem;">
+                <strong>Total:</strong>
+                <strong style="color: var(--primary-color);">${formatPrice(total)}</strong>
+              </div>
+
+              ${subtotal < 100 ? `
+                <div class="alert alert-info" style="margin-bottom: 20px;">
+                  💡 Add ${formatPrice(100 - subtotal)} more for FREE shipping!
+                </div>
+              ` : ''}
+              
+              <a href="/checkout" class="btn btn-primary" style="width: 100%; display: block; text-align: center;">
+                Proceed to Checkout
+              </a>
+              
+              <div style="margin-top: 20px; text-align: center;">
+                <p style="font-size: 0.875rem; color: var(--gray);">
+                  🔒 Secure checkout<br>
+                  💳 Multiple payment options
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      container.innerHTML = html;
+    }
+
+    document.addEventListener('DOMContentLoaded', renderCart);
+    
+    // Listen for currency changes
+    document.addEventListener('currencyChanged', renderCart);
+    
+    // Function to reload prices on currency change
+    function reloadPricesOnPage() {
+      renderCart();
+    }
+  </script>
+</body>
+</html>

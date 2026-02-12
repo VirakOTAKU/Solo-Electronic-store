@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - Chen Electronic</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="header-top">
+      <div class="container">
+        <div>📧 support@chenelectronic.com | 📞 +855 23 964 285</div>
+        <div>
+          <a href="/about">About Us</a>
+          <a href="/contact">Contact</a>
+          <a href="/account" class="user-link">👤 Login</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="header-main">
+      <div class="container">
+        <a href="/" class="logo" style="display: flex; align-items: center; gap: 10px;">
+          <img src="/img/Chen.png" alt="Chen Logo" style="height: 50px; width: auto;">
+          <span style="font-weight: bold; font-size: 20px;">Chen<span style="color: #e74c3c;">Electronic</span></span>
+        </a>
+        
+        <form class="search-bar">
+          <input type="text" placeholder="Search for products...">
+          <button type="submit">🔍</button>
+        </form>
+        
+        <div class="header-actions">
+          <a href="/cart">
+            🛒 Cart
+            <span class="cart-count">0</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <nav>
+      <div class="container">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/shop">Shop</a></li>
+          <li><a href="/shop?category=Smartphones">Smartphones</a></li>
+          <li><a href="/shop?category=Laptops">Laptops</a></li>
+          <li><a href="/shop?category=Audio">Audio</a></li>
+          <li><a href="/shop?category=Gaming">Gaming</a></li>
+          <li><a href="/shop?featured=1">Featured</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <h1>🛍️ Checkout</h1>
+        
+        <div id="checkout-content" style="margin-top: 40px;">
+          <!-- Checkout form will be rendered here -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Solo<span style="color: var(--secondary-color);">E-Com</span></h3>
+          <p>Your trusted destination for electronics and gadgets.</p>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/shop">Shop</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/contact">Contact Us</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Customer Service</h3>
+          <ul>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Use</a></li>
+            <li><a href="/dmca">DMCA</a></li>
+            <li><a href="/rss">RSS Feed</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Newsletter</h3>
+          <form class="newsletter-form">
+            <input type="email" placeholder="Your email" required>
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 Chen Electronic. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+  <script>
+    function renderCheckout() {
+      const cart = getCart();
+      const container = document.getElementById('checkout-content');
+      
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 60px 20px;">
+            <h2 style="color: var(--gray); margin-bottom: 20px;">Your cart is empty</h2>
+            <a href="/shop" class="btn btn-primary">Continue Shopping</a>
+          </div>
+        `;
+        return;
+      }
+
+      const subtotal = getCartTotal();
+      const shipping = subtotal > 100 ? 0 : 15;
+      const tax = subtotal * 0.1;
+      const total = subtotal + shipping + tax;
+
+      const html = `
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 40px;">
+          <!-- Checkout Form -->
+          <div>
+            <form id="checkout-form">
+              <div class="card" style="padding: 30px; margin-bottom: 30px;">
+                <h2 style="margin-bottom: 25px;">📦 Shipping Information</h2>
+                
+                <div class="form-group">
+                  <label>Full Name *</label>
+                  <input type="text" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                  <label>Email *</label>
+                  <input type="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                  <label>Phone *</label>
+                  <input type="tel" name="phone" required>
+                </div>
+                
+                <div class="form-group">
+                  <label>Address *</label>
+                  <input type="text" name="address" required>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                  <div class="form-group">
+                    <label>City *</label>
+                    <input type="text" name="city" required>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label>ZIP Code *</label>
+                    <input type="text" name="zip" required>
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label>Country *</label>
+                  <select name="country" required>
+                    <option value="">Select Country</option>
+                    <option value="Afghanistan">Afghanistan</option>
+                    <option value="Albania">Albania</option>
+                    <option value="Algeria">Algeria</option>
+                    <option value="Andorra">Andorra</option>
+                    <option value="Angola">Angola</option>
+                    <option value="Antigua and Barbuda">Antigua and Barbuda</option>
+                    <option value="Argentina">Argentina</option>
+                    <option value="Armenia">Armenia</option>
+                    <option value="Australia">Australia</option>
+                    <option value="Austria">Austria</option>
+                    <option value="Azerbaijan">Azerbaijan</option>
+                    <option value="Bahamas">Bahamas</option>
+                    <option value="Bahrain">Bahrain</option>
+                    <option value="Bangladesh">Bangladesh</option>
+                    <option value="Barbados">Barbados</option>
+                    <option value="Belarus">Belarus</option>
+                    <option value="Belgium">Belgium</option>
+                    <option value="Belize">Belize</option>
+                    <option value="Benin">Benin</option>
+                    <option value="Bhutan">Bhutan</option>
+                    <option value="Bolivia">Bolivia</option>
+                    <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
+                    <option value="Botswana">Botswana</option>
+                    <option value="Brazil">Brazil</option>
+                    <option value="Brunei">Brunei</option>
+                    <option value="Bulgaria">Bulgaria</option>
+                    <option value="Burkina Faso">Burkina Faso</option>
+                    <option value="Burundi">Burundi</option>
+                    <option value="Cambodia">Cambodia</option>
+                    <option value="Cameroon">Cameroon</option>
+                    <option value="Canada">Canada</option>
+                    <option value="Cape Verde">Cape Verde</option>
+                    <option value="Central African Republic">Central African Republic</option>
+                    <option value="Chad">Chad</option>
+                    <option value="Chile">Chile</option>
+                    <option value="China">China</option>
+                    <option value="Colombia">Colombia</option>
+                    <option value="Comoros">Comoros</option>
+                    <option value="Congo">Congo</option>
+                    <option value="Costa Rica">Costa Rica</option>
+                    <option value="Croatia">Croatia</option>
+                    <option value="Cuba">Cuba</option>
+                    <option value="Cyprus">Cyprus</option>
+                    <option value="Czech Republic">Czech Republic</option>
+                    <option value="Denmark">Denmark</option>
+                    <option value="Djibouti">Djibouti</option>
+                    <option value="Dominica">Dominica</option>
+                    <option value="Dominican Republic">Dominican Republic</option>
+                    <option value="East Timor">East Timor</option>
+                    <option value="Ecuador">Ecuador</option>
+                    <option value="Egypt">Egypt</option>
+                    <option value="El Salvador">El Salvador</option>
+                    <option value="Equatorial Guinea">Equatorial Guinea</option>
+                    <option value="Eritrea">Eritrea</option>
+                    <option value="Estonia">Estonia</option>
+                    <option value="Ethiopia">Ethiopia</option>
+                    <option value="Fiji">Fiji</option>
+                    <option value="Finland">Finland</option>
+                    <option value="France">France</option>
+                    <option value="Gabon">Gabon</option>
+                    <option value="Gambia">Gambia</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Germany">Germany</option>
+                    <option value="Ghana">Ghana</option>
+                    <option value="Greece">Greece</option>
+                    <option value="Grenada">Grenada</option>
+                    <option value="Guatemala">Guatemala</option>
+                    <option value="Guinea">Guinea</option>
+                    <option value="Guinea-Bissau">Guinea-Bissau</option>
+                    <option value="Guyana">Guyana</option>
+                    <option value="Haiti">Haiti</option>
+                    <option value="Honduras">Honduras</option>
+                    <option value="Hungary">Hungary</option>
+                    <option value="Iceland">Iceland</option>
+                    <option value="India">India</option>
+                    <option value="Indonesia">Indonesia</option>
+                    <option value="Iran">Iran</option>
+                    <option value="Iraq">Iraq</option>
+                    <option value="Ireland">Ireland</option>
+                    <option value="Israel">Israel</option>
+                    <option value="Italy">Italy</option>
+                    <option value="Jamaica">Jamaica</option>
+                    <option value="Japan">Japan</option>
+                    <option value="Jordan">Jordan</option>
+                    <option value="Kazakhstan">Kazakhstan</option>
+                    <option value="Kenya">Kenya</option>
+                    <option value="Kiribati">Kiribati</option>
+                    <option value="Kuwait">Kuwait</option>
+                    <option value="Kyrgyzstan">Kyrgyzstan</option>
+                    <option value="Laos">Laos</option>
+                    <option value="Latvia">Latvia</option>
+                    <option value="Lebanon">Lebanon</option>
+                    <option value="Lesotho">Lesotho</option>
+                    <option value="Liberia">Liberia</option>
+                    <option value="Libya">Libya</option>
+                    <option value="Liechtenstein">Liechtenstein</option>
+                    <option value="Lithuania">Lithuania</option>
+                    <option value="Luxembourg">Luxembourg</option>
+                    <option value="Madagascar">Madagascar</option>
+                    <option value="Malawi">Malawi</option>
+                    <option value="Malaysia">Malaysia</option>
+                    <option value="Maldives">Maldives</option>
+                    <option value="Mali">Mali</option>
+                    <option value="Malta">Malta</option>
+                    <option value="Marshall Islands">Marshall Islands</option>
+                    <option value="Mauritania">Mauritania</option>
+                    <option value="Mauritius">Mauritius</option>
+                    <option value="Mexico">Mexico</option>
+                    <option value="Micronesia">Micronesia</option>
+                    <option value="Moldova">Moldova</option>
+                    <option value="Monaco">Monaco</option>
+                    <option value="Mongolia">Mongolia</option>
+                    <option value="Montenegro">Montenegro</option>
+                    <option value="Morocco">Morocco</option>
+                    <option value="Mozambique">Mozambique</option>
+                    <option value="Myanmar">Myanmar</option>
+                    <option value="Namibia">Namibia</option>
+                    <option value="Nauru">Nauru</option>
+                    <option value="Nepal">Nepal</option>
+                    <option value="Netherlands">Netherlands</option>
+                    <option value="New Zealand">New Zealand</option>
+                    <option value="Nicaragua">Nicaragua</option>
+                    <option value="Niger">Niger</option>
+                    <option value="Nigeria">Nigeria</option>
+                    <option value="North Korea">North Korea</option>
+                    <option value="North Macedonia">North Macedonia</option>
+                    <option value="Norway">Norway</option>
+                    <option value="Oman">Oman</option>
+                    <option value="Pakistan">Pakistan</option>
+                    <option value="Palau">Palau</option>
+                    <option value="Palestine">Palestine</option>
+                    <option value="Panama">Panama</option>
+                    <option value="Papua New Guinea">Papua New Guinea</option>
+                    <option value="Paraguay">Paraguay</option>
+                    <option value="Peru">Peru</option>
+                    <option value="Philippines">Philippines</option>
+                    <option value="Poland">Poland</option>
+                    <option value="Portugal">Portugal</option>
+                    <option value="Qatar">Qatar</option>
+                    <option value="Romania">Romania</option>
+                    <option value="Russia">Russia</option>
+                    <option value="Rwanda">Rwanda</option>
+                    <option value="Saint Kitts and Nevis">Saint Kitts and Nevis</option>
+                    <option value="Saint Lucia">Saint Lucia</option>
+                    <option value="Saint Vincent and the Grenadines">Saint Vincent and the Grenadines</option>
+                    <option value="Samoa">Samoa</option>
+                    <option value="San Marino">San Marino</option>
+                    <option value="Sao Tome and Principe">Sao Tome and Principe</option>
+                    <option value="Saudi Arabia">Saudi Arabia</option>
+                    <option value="Senegal">Senegal</option>
+                    <option value="Serbia">Serbia</option>
+                    <option value="Seychelles">Seychelles</option>
+                    <option value="Sierra Leone">Sierra Leone</option>
+                    <option value="Singapore">Singapore</option>
+                    <option value="Slovakia">Slovakia</option>
+                    <option value="Slovenia">Slovenia</option>
+                    <option value="Solomon Islands">Solomon Islands</option>
+                    <option value="Somalia">Somalia</option>
+                    <option value="South Africa">South Africa</option>
+                    <option value="South Korea">South Korea</option>
+                    <option value="South Sudan">South Sudan</option>
+                    <option value="Spain">Spain</option>
+                    <option value="Sri Lanka">Sri Lanka</option>
+                    <option value="Sudan">Sudan</option>
+                    <option value="Suriname">Suriname</option>
+                    <option value="Sweden">Sweden</option>
+                    <option value="Switzerland">Switzerland</option>
+                    <option value="Syria">Syria</option>
+                    <option value="Taiwan">Taiwan</option>
+                    <option value="Tajikistan">Tajikistan</option>
+                    <option value="Tanzania">Tanzania</option>
+                    <option value="Thailand">Thailand</option>
+                    <option value="Togo">Togo</option>
+                    <option value="Tonga">Tonga</option>
+                    <option value="Trinidad and Tobago">Trinidad and Tobago</option>
+                    <option value="Tunisia">Tunisia</option>
+                    <option value="Turkey">Turkey</option>
+                    <option value="Turkmenistan">Turkmenistan</option>
+                    <option value="Tuvalu">Tuvalu</option>
+                    <option value="Uganda">Uganda</option>
+                    <option value="Ukraine">Ukraine</option>
+                    <option value="United Arab Emirates">United Arab Emirates</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="United States">United States</option>
+                    <option value="Uruguay">Uruguay</option>
+                    <option value="Uzbekistan">Uzbekistan</option>
+                    <option value="Vanuatu">Vanuatu</option>
+                    <option value="Vatican City">Vatican City</option>
+                    <option value="Venezuela">Venezuela</option>
+                    <option value="Vietnam">Vietnam</option>
+                    <option value="Yemen">Yemen</option>
+                    <option value="Zambia">Zambia</option>
+                    <option value="Zimbabwe">Zimbabwe</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="card" style="padding: 30px; margin-bottom: 30px;">
+                <h2 style="margin-bottom: 25px;">💳 Payment Method</h2>
+                
+                <style>
+                  .payment-options {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 15px;
+                  }
+                  
+                  .payment-option {
+                    position: relative;
+                    cursor: pointer;
+                  }
+                  
+                  .payment-option input[type="radio"] {
+                    display: none;
+                  }
+                  
+                  .payment-option-label {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 20px;
+                    border: 2px solid var(--border);
+                    border-radius: 10px;
+                    background-color: #f9f9f9;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-weight: 600;
+                  }
+                  
+                  .payment-option input[type="radio"]:checked + .payment-option-label {
+                    border-color: var(--primary-color);
+                    background-color: rgba(231, 76, 60, 0.05);
+                    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+                  }
+                  
+                  .payment-option-label:hover {
+                    border-color: var(--primary-color);
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                  }
+                  
+                  .payment-icon {
+                    font-size: 1.5rem;
+                    margin-right: 10px;
+                  }
+                  
+                  .radio-circle {
+                    width: 20px;
+                    height: 20px;
+                    border: 2px solid var(--border);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.3s ease;
+                  }
+                  
+                  .payment-option input[type="radio"]:checked + .payment-option-label .radio-circle {
+                    border-color: var(--primary-color);
+                    background-color: var(--primary-color);
+                  }
+                  
+                  .radio-circle::after {
+                    content: '';
+                    width: 6px;
+                    height: 6px;
+                    background-color: white;
+                    border-radius: 50%;
+                    opacity: 0;
+                  }
+                  
+                  .payment-option input[type="radio"]:checked + .payment-option-label .radio-circle::after {
+                    opacity: 1;
+                  }
+                  
+                  @media (max-width: 768px) {
+                    .payment-options {
+                      grid-template-columns: 1fr;
+                    }
+                  }
+                  
+                  .qr-modal {
+                    display: none;
+                    position: fixed;
+                    z-index: 1000;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.5);
+                    animation: fadeIn 0.3s ease;
+                  }
+                  
+                  .qr-modal.show {
+                    display: flex;
+                  }
+                  
+                  .qr-modal-content {
+                    background-color: white;
+                    margin: auto;
+                    padding: 40px;
+                    border-radius: 15px;
+                    width: 90%;
+                    max-width: 450px;
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+                    text-align: center;
+                  }
+                  
+                  .qr-close {
+                    color: #999;
+                    float: right;
+                    font-size: 28px;
+                    font-weight: bold;
+                    cursor: pointer;
+                    transition: color 0.3s;
+                  }
+                  
+                  .qr-close:hover {
+                    color: var(--primary-color);
+                  }
+                  
+                  .qr-code-img {
+                    max-width: 300px;
+                    margin: 20px 0;
+                    border: 3px solid var(--border);
+                    border-radius: 10px;
+                    padding: 10px;
+                  }
+                  
+                  @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                  }
+                </style>
+                
+                <div class="payment-options">
+                  <div class="payment-option">
+                    <input type="radio" id="credit_card" name="payment" value="credit_card" checked>
+                    <label for="credit_card" class="payment-option-label">
+                      <span style="display: flex; align-items: center;">
+                        <span class="payment-icon">💳</span>
+                        <span>Card</span>
+                      </span>
+                      <span class="radio-circle"></span>
+                    </label>
+                  </div>
+                  
+                  <div class="payment-option">
+                    <input type="radio" id="paypal" name="payment" value="paypal">
+                    <label for="paypal" class="payment-option-label">
+                      <span style="display: flex; align-items: center;">
+                        <span class="payment-icon">🅿️</span>
+                        <span>PayPal</span>
+                      </span>
+                      <span class="radio-circle"></span>
+                    </label>
+                  </div>
+                  
+                  <div class="payment-option">
+                    <input type="radio" id="aba_bank" name="payment" value="aba_bank">
+                    <label for="aba_bank" class="payment-option-label">
+                      <span style="display: flex; align-items: center;">
+                        <span class="payment-icon">🇰🇭</span>
+                        <span>ABA Bank</span>
+                      </span>
+                      <span class="radio-circle"></span>
+                    </label>
+                  </div>
+                  
+                  <div class="payment-option">
+                    <input type="radio" id="cash_on_delivery" name="payment" value="cash_on_delivery">
+                    <label for="cash_on_delivery" class="payment-option-label">
+                      <span style="display: flex; align-items: center;">
+                        <span class="payment-icon">💵</span>
+                        <span>Cash on Delivery</span>
+                      </span>
+                      <span class="radio-circle"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- ABA Bank QR Code Modal -->
+              <div id="abaQRModal" class="qr-modal">
+                <div class="qr-modal-content">
+                  <span class="qr-close" onclick="closeABAQR()">&times;</span>
+                  <img src="/img/aba_qr.png" alt="ABA Bank QR Code" class="qr-code-img" style="max-width: 400px; width: 100%; margin: 20px 0;">
+                  <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button onclick="closeABAQR()" class="btn btn-secondary" style="flex: 1;">Cancel</button>
+                    <button onclick="confirmABAOrder()" class="btn btn-primary" style="flex: 1;">✅ Confirm & Place Order</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>
+                  <input type="checkbox" required>
+                  I agree to the <a href="/terms">Terms & Conditions</a> and <a href="/privacy">Privacy Policy</a>
+                </label>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%; padding: 18px; font-size: 1.1rem;">
+                🔒 Place Order - ${formatPrice(total)}
+              </button>
+            </form>
+          </div>
+
+          <!-- Order Summary -->
+          <div>
+            <div class="card" style="padding: 30px; position: sticky; top: 100px;">
+              <h2 style="margin-bottom: 25px;">📋 Order Summary</h2>
+              
+              <div style="max-height: 300px; overflow-y: auto; margin-bottom: 20px; padding-right: 10px;">
+                ${cart.map(item => {
+                  const price = item.sale_price || item.price;
+                  const itemTotal = price * item.quantity;
+                  return `
+                    <div style="display: flex; gap: 15px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
+                      <img src="${item.image}" alt="${item.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;" onerror="this.src='https://via.placeholder.com/60?text=No+Image'">
+                      <div style="flex: 1;">
+                        <p style="font-weight: 600; margin-bottom: 5px;">${item.name}</p>
+                        <p style="font-size: 0.875rem; color: var(--gray);">Qty: ${item.quantity} × ${formatPrice(price)}</p>
+                      </div>
+                      <p style="font-weight: 700; color: var(--primary-color);">${formatPrice(itemTotal)}</p>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+              
+              <div style="border-top: 2px solid var(--border); padding-top: 20px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                  <span style="color: var(--gray);">Subtotal:</span>
+                  <strong>${formatPrice(subtotal)}</strong>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                  <span style="color: var(--gray);">Shipping:</span>
+                  <strong>${shipping === 0 ? 'FREE' : formatPrice(shipping)}</strong>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                  <span style="color: var(--gray);">Tax (10%):</span>
+                  <strong>${formatPrice(tax)}</strong>
+                </div>
+                
+                <div style="border-top: 2px solid var(--border); padding-top: 15px; margin-top: 15px;">
+                  <div style="display: flex; justify-content: space-between; font-size: 1.5rem;">
+                    <strong>Total:</strong>
+                    <strong style="color: var(--primary-color);">${formatPrice(total)}</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      container.innerHTML = html;
+      
+      // Add form submit handler
+      document.getElementById('checkout-form').addEventListener('submit', handleCheckout);
+    }
+
+    let pendingOrderData = null;
+
+    async function handleCheckout(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(e.target);
+      const cart = getCart();
+      const subtotal = getCartTotal();
+      const shipping = subtotal > 100 ? 0 : 15;
+      const tax = subtotal * 0.1;
+      const total = subtotal + shipping + tax;
+
+      const orderData = {
+        items: cart,
+        total: total,
+        shipping: {
+          name: formData.get('name'),
+          email: formData.get('email'),
+          phone: formData.get('phone'),
+          address: formData.get('address'),
+          city: formData.get('city'),
+          country: formData.get('country'),
+          zip: formData.get('zip'),
+        },
+        payment_method: formData.get('payment'),
+        user_id: getUser()?.id || null,
+      };
+
+      // If ABA Bank is selected, show QR code instead of submitting immediately
+      if (formData.get('payment') === 'aba_bank') {
+        pendingOrderData = orderData;
+        document.getElementById('abaQRModal').classList.add('show');
+        return;
+      }
+
+      // Otherwise, proceed with regular order submission
+      await submitOrderData(orderData);
+    }
+
+    async function submitOrderData(orderData) {
+      try {
+        const result = await submitOrder(orderData);
+        clearCart();
+        showNotification('Order placed successfully!', 'success');
+        
+        // Redirect to success page
+        setTimeout(() => {
+          document.getElementById('checkout-content').innerHTML = `
+            <div style="text-align: center; padding: 60px 20px;">
+              <div style="font-size: 5rem; margin-bottom: 20px;">✅</div>
+              <h2 style="color: var(--success); margin-bottom: 20px;">Order Placed Successfully!</h2>
+              <p style="color: var(--gray); font-size: 1.125rem; margin-bottom: 10px;">Order ID: #${result.order_id}</p>
+              <p style="color: var(--gray); margin-bottom: 30px;">Thank you for your purchase. We'll send you a confirmation email shortly.</p>
+              <a href="/shop" class="btn btn-primary">Continue Shopping</a>
+            </div>
+          `;
+        }, 1000);
+      } catch (error) {
+        showNotification(error.message, 'error');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', ()=> {
+      renderCheckout();
+    });
+    
+    // Listen for currency changes
+    document.addEventListener('currencyChanged', renderCheckout);
+    
+    // Function to reload prices on currency change
+    function reloadPricesOnPage() {
+      renderCheckout();
+    }
+    
+    // ABA Bank QR Code Functions
+    function showABAQRCode(event) {
+      event.preventDefault();
+      document.getElementById('abaQRModal').classList.add('show');
+      // Auto-select the radio button
+      document.getElementById('aba_bank').checked = true;
+    }
+    
+    function closeABAQR() {
+      document.getElementById('abaQRModal').classList.remove('show');
+      pendingOrderData = null;
+    }
+    
+    function confirmABAOrder() {
+      if (pendingOrderData) {
+        closeABAQR();
+        submitOrderData(pendingOrderData);
+      }
+    }
+    
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+      const modal = document.getElementById('abaQRModal');
+      if (event.target === modal) {
+        modal.classList.remove('show');
+      }
+    }
+  </script>
+</body>
+</html>

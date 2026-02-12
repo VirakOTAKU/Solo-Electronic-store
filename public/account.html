@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Account - Chen Electronic</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="header-top">
+      <div class="container">
+        <div>📧 support@chenelectronic.com | 📞 +855 23 964 285</div>
+        <div>
+          <a href="/about">About Us</a>
+          <a href="/contact">Contact</a>
+          <a href="/account" class="user-link">👤 Login</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="header-main">
+      <div class="container">
+        <a href="/" class="logo" style="display: flex; align-items: center; gap: 10px;">
+          <img src="/img/Chen.png" alt="Chen Logo" style="height: 50px; width: auto;">
+          <span style="font-weight: bold; font-size: 20px;">Chen<span style="color: #e74c3c;">Electronic</span></span>
+        </a>
+        
+        <form class="search-bar">
+          <input type="text" placeholder="Search for products...">
+          <button type="submit">🔍</button>
+        </form>
+        
+        <div class="header-actions">
+          <a href="/cart">
+            🛒 Cart
+            <span class="cart-count">0</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <nav>
+      <div class="container">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/shop">Shop</a></li>
+          <li><a href="/shop?category=Smartphones">Smartphones</a></li>
+          <li><a href="/shop?category=Laptops">Laptops</a></li>
+          <li><a href="/shop?category=Audio">Audio</a></li>
+          <li><a href="/shop?category=Gaming">Gaming</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <div id="account-content">
+          <!-- Account info will be rendered here -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+        <h3>Solo<span class="text-secondary">E-Com</span></h3>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/shop">Shop</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/contact">Contact Us</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Customer Service</h3>
+          <ul>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Use</a></li>
+            <li><a href="/dmca">DMCA</a></li>
+            <li><a href="/rss">RSS Feed</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Newsletter</h3>
+          <form class="newsletter-form">
+            <input type="email" placeholder="Your email" required>
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 Chen Electronic. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+  <script>
+    async function renderAccount() {
+      const user = getUser();
+      const container = document.getElementById('account-content');
+
+      if (!user) {
+        container.innerHTML = `
+          <div class="account-empty-state">
+            <h2>Please Login</h2>
+            <p>You need to be logged in to view this page</p>
+            <a href="/login" class="btn btn-primary">Login</a>
+          </div>
+        `;
+        return;
+      }
+
+      // Fetch full user data with profile picture from API
+      try {
+        const response = await fetchAPI('/auth/me');
+        const fullUser = response.user || user;
+        renderUserAccount(fullUser);
+      } catch (error) {
+        // Fallback to localStorage data if API fails
+        renderUserAccount(user);
+      }
+    }
+
+    function renderUserAccount(user) {
+      const container = document.getElementById('account-content');
+
+      const html = `
+        <h1 class="account-title">👤 My Account</h1>
+        
+        <div class="account-layout">
+          <!-- Sidebar -->
+          <div class="account-sidebar">
+            <div class="card account-card">
+              <div class="account-avatar-section">
+                ${user.profile_pic ? 
+                  `<img src="${user.profile_pic}" alt="${user.name}" class="account-avatar" style="background: transparent; border-radius: 50%; object-fit: cover; width: 100px; height: 100px;">` 
+                  : `<div class="account-avatar">${user.name.charAt(0).toUpperCase()}</div>`
+                }
+                <div class="account-name">
+                  <h3>${user.name}</h3>
+                  <p style="color: var(--gray); font-size: 0.9rem;">${user.email}</p>
+                </div>
+              </div>
+
+              ${!user.profile_pic ? 
+                `<a href="/profile-picture" class="btn btn-secondary btn-full-width" style="margin-bottom: 10px;">
+                  📸 Add Profile Picture
+                </a>` 
+                : ''
+              }
+              
+              <button class="btn btn-danger btn-full-width" onclick="logout()">
+                Logout
+              </button>
+            </div>
+          </div>
+
+          <!-- Main Content -->
+          <div>
+            <div class="card account-card" style="margin-bottom: 30px;">
+              <h2 style="margin-bottom: 25px;">📋 Account Information</h2>
+              
+              <div class="account-info-grid">
+                <div class="account-info-item">
+                  <strong>Name:</strong>
+                  <p>${user.name}</p>
+                </div>
+                <div class="account-info-item">
+                  <strong>Email:</strong>
+                  <p>${user.email}</p>
+                </div>
+                <div class="account-info-item">
+                  <strong>Member Since:</strong>
+                  <p>${new Date().toLocaleDateString()}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="card account-card" style="margin-bottom: 30px;">
+              <h2 style="margin-bottom: 25px;">🎯 Quick Actions</h2>
+              
+              <div class="account-actions-grid">
+                <a href="/shop" class="btn btn-outline account-action-btn">
+                  🛍️ Continue Shopping
+                </a>
+                <a href="/cart" class="btn btn-outline account-action-btn">
+                  🛒 View Cart
+                </a>
+                <a href="/contact" class="btn btn-outline account-action-btn">
+                  💬 Contact Support
+                </a>
+                <a href="/shop?featured=1" class="btn btn-outline account-action-btn">
+                  ⭐ Featured Products
+                </a>
+                ${user.email === 'admin@chenelectronic.com' ? `
+                <a href="#" onclick="window.open('/admin', '_blank'); return false;" class="btn btn-primary account-action-btn account-admin-btn">
+                  🛡️ Admin Dashboard
+                </a>
+                ` : ''}
+              </div>
+            </div>
+
+            <div class="card account-card">
+              <h2 style="margin-bottom: 25px;">📦 Recent Orders</h2>
+              <p style="color: var(--gray); text-align: center; padding: 40px 20px;">
+                No orders yet. <a href="/shop" style="color: var(--primary-color);">Start shopping!</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    document.addEventListener('DOMContentLoaded', renderAccount);
+  </script>
+</body>
+</html>

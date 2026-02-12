@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details - Chen Electronic</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="header-top">
+      <div class="container">
+        <div>📧 support@chenelectronic.com | 📞 +855 23 964 285</div>
+        <div>
+          <a href="/about">About Us</a>
+          <a href="/contact">Contact</a>
+          <a href="/account" class="user-link">👤 Login</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="header-main">
+      <div class="container">
+        <a href="/" class="logo" style="display: flex; align-items: center; gap: 10px;">
+          <img src="/img/Chen.png" alt="Chen Logo" style="height: 50px; width: auto;">
+          <span style="font-weight: bold; font-size: 20px;">Chen<span style="color: #e74c3c;">Electronic</span></span>
+        </a>
+        
+        <form class="search-bar">
+          <input type="text" placeholder="Search for products...">
+          <button type="submit">🔍</button>
+        </form>
+        
+        <div class="header-actions">
+          <a href="/cart">
+            🛒 Cart
+            <span class="cart-count">0</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <nav>
+      <div class="container">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/shop">Shop</a></li>
+          <li><a href="/shop?category=Smartphones">Smartphones</a></li>
+          <li><a href="/shop?category=Laptops">Laptops</a></li>
+          <li><a href="/shop?category=Audio">Audio</a></li>
+          <li><a href="/shop?category=Gaming">Gaming</a></li>
+          <li><a href="/shop?featured=1">Featured</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <div id="product-detail">
+          <div class="loading">Loading product...</div>
+        </div>
+
+        <!-- Reviews Section -->
+        <div id="reviews-section" style="margin-top: 60px;">
+          <h2>Customer Reviews</h2>
+          <div id="reviews-list" style="margin-top: 30px;"></div>
+          
+          <div class="card" style="margin-top: 30px; padding: 30px;">
+            <h3>Write a Review</h3>
+            <form id="review-form" style="margin-top: 20px;">
+              <div class="form-group">
+                <label>Your Name</label>
+                <input type="text" id="reviewer-name" required>
+              </div>
+              <div class="form-group">
+                <label>Rating</label>
+                <select id="rating" required>
+                  <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                  <option value="4">⭐⭐⭐⭐ Good</option>
+                  <option value="3">⭐⭐⭐ Average</option>
+                  <option value="2">⭐⭐ Poor</option>
+                  <option value="1">⭐ Terrible</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Your Review</label>
+                <textarea id="review-comment" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Submit Review</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Related Products -->
+        <div style="margin-top: 60px;">
+          <h2>Related Products</h2>
+          <div id="related-products" class="grid grid-4" style="margin-top: 30px;"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Chen<span style="color: var(--secondary-color);">Electronic</span></h3>
+          <p>Your trusted destination for electronics and gadgets.</p>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/shop">Shop</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/contact">Contact Us</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Customer Service</h3>
+          <ul>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Use</a></li>
+            <li><a href="/dmca">DMCA</a></li>
+            <li><a href="/rss">RSS Feed</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Newsletter</h3>
+          <form class="newsletter-form">
+            <input type="email" placeholder="Your email" required>
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 Chen Electronic. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+  <script>
+    let currentProduct = null;
+
+    async function loadProduct() {
+      const pathParts = window.location.pathname.split('/').filter(part => part.trim() !== '');
+      const productId = pathParts[pathParts.length - 1];
+      
+      if (!productId || isNaN(productId)) {
+        document.getElementById('product-detail').innerHTML = '<p class="alert alert-error">Invalid product ID</p>';
+        return;
+      }
+      
+      try {
+        const data = await getProduct(productId);
+        currentProduct = data.product;
+        renderProduct(data.product);
+        renderReviews(data.reviews || []);
+        renderRelatedProducts(data.relatedProducts || []);
+      } catch (error) {
+        console.error('Error loading product:', error);
+        document.getElementById('product-detail').innerHTML = '<p class="alert alert-error">Product not found or error loading product</p>';
+      }
+    }
+
+    function renderProduct(product) {
+      const hasDiscount = product.sale_price && product.sale_price < product.price;
+      const displayPrice = product.sale_price || product.price;
+      const discount = hasDiscount ? Math.round((1 - product.sale_price / product.price) * 100) : 0;
+      
+      const html = `
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: start;">
+          <div>
+            <img src="${product.image}" alt="${product.name}" style="width: 100%; border-radius: 12px;" onerror="this.src='https://via.placeholder.com/600x600?text=No+Image'">
+          </div>
+          
+          <div>
+            ${product.featured ? '<span class="badge new">Featured</span>' : ''}
+            ${hasDiscount ? `<span class="badge" style="margin-left: 10px;">-${discount}%</span>` : ''}
+            
+            <h1 style="margin: 20px 0;">${product.name}</h1>
+            
+            <div class="product-rating" style="font-size: 1.1rem; margin-bottom: 20px;">
+              <span>${renderStars(product.rating)}</span>
+              <span>(${product.reviews_count} reviews)</span>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+              <span style="color: var(--gray);">Brand:</span>
+              <strong>${product.brand}</strong>
+              <span style="margin: 0 15px;">|</span>
+              <span style="color: var(--gray);">Category:</span>
+              <strong>${product.category}</strong>
+            </div>
+            
+            <div class="product-price" style="margin: 30px 0;">
+              <span class="price" style="font-size: 2.5rem;">${formatPrice(displayPrice)}</span>
+              ${hasDiscount ? `<span class="old-price" style="font-size: 1.5rem;">${formatPrice(product.price)}</span>` : ''}
+            </div>
+
+            <div style="background: var(--light); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+              <p style="color: var(--gray); margin-bottom: 10px;">Stock Status:</p>
+              <p style="font-size: 1.25rem; font-weight: 600; color: ${product.stock > 0 ? 'var(--success)' : 'var(--danger)'};">
+                ${product.stock > 0 ? `✓ In Stock (${product.stock} available)` : '✗ Out of Stock'}
+              </p>
+            </div>
+            
+            <div style="margin-bottom: 30px;">
+              <h3>Description</h3>
+              <p style="line-height: 1.8; color: var(--gray); margin-top: 10px;">${product.description}</p>
+            </div>
+
+            ${product.stock > 0 ? `
+              <button class="btn btn-primary" style="width: 100%; padding: 18px; font-size: 1.1rem;" onclick='addToCart(${JSON.stringify(product).replace(/'/g, "&#39;")})'>
+                🛒 Add to Cart
+              </button>
+            ` : ''}
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('product-detail').innerHTML = html;
+    }
+
+    function renderReviews(reviews) {
+      if (reviews.length === 0) {
+        document.getElementById('reviews-list').innerHTML = '<p style="color: var(--gray);">No reviews yet. Be the first to review!</p>';
+        return;
+      }
+
+      const html = reviews.map(review => `
+        <div class="card" style="padding: 20px; margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+            <div>
+              <strong>${review.user_name}</strong>
+              <div class="product-rating" style="margin-top: 5px;">
+                ${renderStars(review.rating)}
+              </div>
+            </div>
+            <span style="color: var(--gray); font-size: 0.875rem;">${formatDate(review.created_at)}</span>
+          </div>
+          <p style="color: var(--gray); line-height: 1.6;">${review.comment || ''}</p>
+        </div>
+      `).join('');
+      
+      document.getElementById('reviews-list').innerHTML = html;
+    }
+
+    function renderRelatedProducts(products) {
+      if (products.length === 0) return;
+
+      const html = products.map(product => {
+        const hasDiscount = product.sale_price && product.sale_price < product.price;
+        const displayPrice = product.sale_price || product.price;
+        
+        return `
+          <div class="card product-card" onclick="window.location.href='/product/${product.id}'" style="cursor: pointer;">
+            <a href="/product/${product.id}" style="text-decoration: none; color: inherit;">
+              <img src="${product.image}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/300x250?text=No+Image'">
+            </a>
+            <div class="card-body">
+              <h3><a href="/product/${product.id}">${product.name}</a></h3>
+              <div class="product-rating">
+                <span>${renderStars(product.rating)}</span>
+                <span>(${product.reviews_count})</span>
+              </div>
+              <div class="product-price">
+                <span class="price">${formatPrice(displayPrice)}</span>
+                ${hasDiscount ? `<span class="old-price">${formatPrice(product.price)}</span>` : ''}
+              </div>
+              <button class="btn btn-primary" style="width: 100%;" onclick='addToCart(${JSON.stringify(product).replace(/'/g, "&#39;")})'>
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      document.getElementById('related-products').innerHTML = html;
+    }
+
+    // Handle review submission
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProduct();
+
+      const reviewForm = document.getElementById('review-form');
+      if (reviewForm) {
+        reviewForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          const pathParts = window.location.pathname.split('/').filter(part => part.trim() !== '');
+          const productId = pathParts[pathParts.length - 1];
+          
+          const reviewerNameEl = document.getElementById('reviewer-name');
+          const ratingEl = document.getElementById('rating');
+          const reviewCommentEl = document.getElementById('review-comment');
+          
+          if (!reviewerNameEl || !ratingEl || !reviewCommentEl) {
+            showNotification('Form fields not found', 'error');
+            return;
+          }
+          
+          const reviewData = {
+            product_id: productId,
+            user_name: reviewerNameEl.value,
+            rating: parseInt(ratingEl.value),
+            comment: reviewCommentEl.value,
+          };
+
+          try {
+            await submitReview(reviewData);
+            showNotification('Thank you for your review!', 'success');
+            e.target.reset();
+            loadProduct(); // Reload to show new review
+          } catch (error) {
+            console.error('Error submitting review:', error);
+            showNotification(error.message || 'Error submitting review', 'error');
+          }
+        });
+      } else {
+        console.warn('Review form element not found');
+      }
+      
+      // Listen for currency changes
+      document.addEventListener('currencyChanged', () => {
+        loadProduct();
+      });
+    });
+    
+    // Function to reload prices on currency change
+    function reloadPricesOnPage() {
+      loadProduct();
+    }
+  </script>
+</body>
+</html>

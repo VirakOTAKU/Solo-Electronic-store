@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Chen Electronic</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="header-top">
+      <div class="container">
+        <div>📧 support@chenelectronic.com | 📞 +855 23 964 285</div>
+        <div>
+          <a href="/about">About Us</a>
+          <a href="/contact">Contact</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="header-main">
+      <div class="container">
+        <a href="/" class="logo" style="display: flex; align-items: center; gap: 10px;">
+          <img src="/img/Chen.png" alt="Chen Logo" style="height: 50px; width: auto;">
+          <span style="font-weight: bold; font-size: 20px;">Chen<span style="color: #e74c3c;">Electronic</span></span>
+        </a>
+        
+        <form class="search-bar">
+          <input type="text" placeholder="Search for products...">
+          <button type="submit">🔍</button>
+        </form>
+        
+        <div class="header-actions">
+          <a href="/cart">
+            🛒 Cart
+            <span class="cart-count">0</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <nav>
+      <div class="container">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/shop">Shop</a></li>
+          <li><a href="/shop?category=Smartphones">Smartphones</a></li>
+          <li><a href="/shop?category=Laptops">Laptops</a></li>
+          <li><a href="/shop?category=Audio">Audio</a></li>
+          <li><a href="/shop?category=Gaming">Gaming</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <div class="login-container">
+          <h1 class="login-title">📝 Register</h1>
+          
+          <div class="card login-card">
+            <form id="register-form">
+              <div class="form-group">
+                <label>Full Name *</label>
+                <input type="text" name="name" required>
+              </div>
+
+              <div class="form-group">
+                <label>Email *</label>
+                <input type="email" name="email" required>
+              </div>
+
+              <div class="form-group">
+                <label>Password *</label>
+                <input type="password" name="password" required minlength="6">
+              </div>
+
+              <div class="form-group">
+                <label>
+                  <input type="checkbox" required>
+                  I agree to the <a href="/terms" target="_blank" class="login-link">Terms & Conditions</a>
+                </label>
+              </div>
+
+              <button type="submit" class="btn btn-primary login-submit-btn">
+                Create Account
+              </button>
+
+              <p class="login-footer-text">
+                Already have an account? <a href="/login" class="login-link">Login here</a>
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+        <h3>Solo<span class="text-secondary">E-Com</span></h3>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/shop">Shop</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/contact">Contact Us</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Customer Service</h3>
+          <ul>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Use</a></li>
+            <li><a href="/dmca">DMCA</a></li>
+            <li><a href="/rss">RSS Feed</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Newsletter</h3>
+          <form class="newsletter-form">
+            <input type="email" placeholder="Your email" required>
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 Chen Electronic. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+  <script>
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(e.target);
+      const userData = {
+        name: formData.get('name'),
+        email: formData.get('email'),
+        password: formData.get('password'),
+      };
+
+      try {
+        const result = await register(userData);
+        saveUser(result.user, result.token);
+        showNotification('Registration successful!', 'success');
+        setTimeout(() => window.location.href = '/profile-picture', 1000);
+      } catch (error) {
+        showNotification(error.message, 'error');
+      }
+    });
+  </script>
+</body>
+</html>

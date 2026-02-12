@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Chen Electronic - Your ultimate destination for electronics and gadgets">
+  <title>Chen Electronic - Electronics & Gadgets Store</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="header-top">
+      <div class="container">
+        <div>📧 support@chenelectronic.com | 📞 +855 23 964 285</div>
+        <div>
+          <a href="/about">About Us</a>
+          <a href="/contact">Contact</a>
+          <a href="/account" class="user-link">👤 Login</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="header-main">
+      <div class="container">
+        <a href="/" class="logo" style="display: flex; align-items: center; gap: 10px;">
+          <img src="/img/Chen.png" alt="Chen Logo" style="height: 50px; width: auto;">
+          <span style="font-weight: bold; font-size: 20px;">Chen<span style="color: #e74c3c;">Electronic</span></span>
+        </a>
+        
+        <form class="search-bar">
+          <input type="text" placeholder="Search for products...">
+          <button type="submit">🔍</button>
+        </form>
+        
+        <div class="header-actions">
+          <a href="/cart">
+            🛒 Cart
+            <span class="cart-count">0</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <nav>
+      <div class="container">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/shop">Shop</a></li>
+          <li><a href="/shop?category=Smartphones">Smartphones</a></li>
+          <li><a href="/shop?category=Laptops">Laptops</a></li>
+          <li><a href="/shop?category=Audio">Audio</a></li>
+          <li><a href="/shop?category=Gaming">Gaming</a></li>
+          <li><a href="/shop?featured=1">Featured</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>🎉 Welcome to Chen Electronic</h1>
+        <p>Discover the latest electronics and gadgets at unbeatable prices</p>
+        <a href="/shop" class="btn btn-secondary">Shop Now</a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>⭐ Featured Products</h2>
+          <p>Check out our handpicked selection of amazing deals</p>
+        </div>
+        <div id="featured-products" class="grid grid-4">
+          <div class="loading">Loading featured products...</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background: var(--light);">
+      <div class="container">
+        <div class="section-header">
+          <h2>📱 Shop by Category</h2>
+          <p>Browse our wide range of product categories</p>
+        </div>
+        <div id="categories" class="grid grid-3">
+          <div class="loading">Loading categories...</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>🔥 Latest Products</h2>
+          <p>Just arrived - fresh new products</p>
+        </div>
+        <div id="latest-products" class="grid grid-4">
+          <div class="loading">Loading latest products...</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: #fff; text-align: center;">
+      <div class="container">
+        <h2 style="color: #fff; margin-bottom: 20px;">💌 Subscribe to Our Newsletter</h2>
+        <p style="opacity: 0.9; margin-bottom: 30px;">Get the latest updates on new products and exclusive offers!</p>
+        <form class="newsletter-form" style="max-width: 500px; margin: 0 auto;">
+          <input type="email" placeholder="Enter your email" required>
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Chen<span style="color: var(--secondary-color);">Electronic</span></h3>
+          <p>Your trusted destination for electronics and gadgets. We offer quality products at competitive prices with excellent customer service.</p>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/shop">Shop</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/contact">Contact Us</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Customer Service</h3>
+          <ul>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Use</a></li>
+            <li><a href="/dmca">DMCA</a></li>
+            <li><a href="/rss">RSS Feed</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Contact Info</h3>
+          <p>📧 support@chenelectronic.com</p>
+          <p>📞 +855 23 964 285</p>
+          <p>📍 123 E-Commerce St, Tech City, TC 12345</p>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 Chen Electronic. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+  <script>
+    // Load featured products
+    async function loadFeaturedProducts() {
+      try {
+        const data = await getProducts({ featured: 1, limit: 8 });
+        renderProducts(data.products, 'featured-products');
+      } catch (error) {
+        document.getElementById('featured-products').innerHTML = '<p class="alert alert-error">Failed to load products</p>';
+      }
+    }
+
+    // Load latest products
+    async function loadLatestProducts() {
+      try {
+        const data = await getProducts({ limit: 8 });
+        renderProducts(data.products, 'latest-products');
+      } catch (error) {
+        document.getElementById('latest-products').innerHTML = '<p class="alert alert-error">Failed to load products</p>';
+      }
+    }
+
+    // Load categories
+    async function loadCategories() {
+      try {
+        const categories = await getCategories();
+        const html = categories.map(cat => `
+          <a href="/shop?category=${encodeURIComponent(cat.category)}" class="card" style="text-decoration: none; text-align: center; padding: 40px 20px;">
+            <h3 style="font-size: 1.5rem; margin-bottom: 10px; color: var(--primary-color);">${cat.category}</h3>
+            <p style="color: var(--gray);">${cat.count} products</p>
+          </a>
+        `).join('');
+        document.getElementById('categories').innerHTML = html;
+      } catch (error) {
+        document.getElementById('categories').innerHTML = '<p class="alert alert-error">Failed to load categories</p>';
+      }
+    }
+
+    // Render products
+    function renderProducts(products, containerId) {
+      const html = products.map(product => {
+        const hasDiscount = product.sale_price && product.sale_price < product.price;
+        const displayPrice = product.sale_price || product.price;
+        const discount = hasDiscount ? Math.round((1 - product.sale_price / product.price) * 100) : 0;
+        
+        return `
+          <div class="card product-card" onclick="window.location.href='/product/${product.id}'" style="cursor: pointer;">
+            ${hasDiscount ? `<div class="badge">-${discount}%</div>` : ''}
+            ${product.featured ? '<div class="badge new" style="left: auto; right: 15px;">Featured</div>' : ''}
+            <a href="/product/${product.id}" style="text-decoration: none; color: inherit;">
+              <img src="${product.image}" alt="${product.name}">
+            </a>
+            <div class="card-body">
+              <h3><a href="/product/${product.id}">${product.name}</a></h3>
+              <div class="product-rating">
+                <span>${renderStars(product.rating)}</span>
+                <span>(${product.reviews_count})</span>
+              </div>
+              <div class="product-price">
+                <span class="price">${formatPrice(displayPrice)}</span>
+                ${hasDiscount ? `<span class="old-price">${formatPrice(product.price)}</span>` : ''}
+              </div>
+              <button class="btn btn-primary" style="width: 100%;" onclick="addToCart(${JSON.stringify(product).replace(/"/g, '&quot;')})">
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      document.getElementById(containerId).innerHTML = html;
+    }
+
+    // Load all data
+    document.addEventListener('DOMContentLoaded', () => {
+      loadFeaturedProducts();
+      loadLatestProducts();
+      loadCategories();
+      
+      // Listen for currency changes
+      document.addEventListener('currencyChanged', () => {
+        loadFeaturedProducts();
+        loadLatestProducts();
+      });
+    });
+    
+    // Function to reload prices on currency change
+    function reloadPricesOnPage() {
+      loadFeaturedProducts();
+      loadLatestProducts();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Profile Picture - Chen Electronic</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .profile-picture-container {
+      max-width: 500px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .profile-preview-section {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .profile-avatar-preview {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      margin: 0 auto 20px;
+      border: 4px solid var(--border);
+      object-fit: cover;
+    }
+
+    .profile-avatar-preview.with-image {
+      background: transparent;
+      border: 4px solid var(--primary-color);
+    }
+
+    .file-input-wrapper {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .file-input-wrapper input[type="file"] {
+      position: absolute;
+      left: -9999px;
+    }
+
+    .file-input-label {
+      display: block;
+      padding: 15px 20px;
+      background: var(--primary-color);
+      color: #fff;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+      transition: var(--transition);
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      white-space: normal;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+
+    .file-input-label:hover {
+      background: var(--primary-dark);
+    }
+
+    .file-name {
+      margin-top: 10px;
+      font-size: 0.875rem;
+      color: var(--gray);
+    }
+
+    .skip-button {
+      margin-top: 15px;
+    }
+
+    #upload-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .account-actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .account-action-btn {
+      padding: 15px;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .profile-pic-card {
+      padding: 40px;
+    }
+
+    .profile-pic-title {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 1.75rem;
+    }
+
+    .profile-pic-subtitle {
+      text-align: center;
+      color: var(--gray);
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .upload-progress {
+      margin-top: 20px;
+      text-align: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease;
+      max-height: 0;
+      overflow: hidden;
+    }
+
+    .upload-progress.active {
+      opacity: 1;
+      visibility: visible;
+      max-height: 100px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--primary-color);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    @media (max-width: 480px) {
+      .file-input-label {
+        padding: 12px 15px;
+        font-size: 0.85rem;
+      }
+
+      .profile-pic-card {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-top">
+      <div class="container">
+        <div>📧 support@chenelectronic.com | 📞 +855 23 964 285</div>
+        <div>
+          <a href="/about">About Us</a>
+          <a href="/contact">Contact</a>
+          <a href="/account" class="user-link">👤 Login</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="header-main">
+      <div class="container">
+        <a href="/" class="logo" style="display: flex; align-items: center; gap: 10px;">
+          <img src="/img/Chen.png" alt="Chen Logo" style="height: 50px; width: auto;">
+          <span style="font-weight: bold; font-size: 20px;">Chen<span style="color: #e74c3c;">Electronic</span></span>
+        </a>
+        
+        <form class="search-bar">
+          <input type="text" placeholder="Search for products...">
+          <button type="submit">🔍</button>
+        </form>
+        
+        <div class="header-actions">
+          <a href="/cart">
+            🛒 Cart
+            <span class="cart-count">0</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <div class="profile-picture-container">
+          <div class="card profile-pic-card">
+            <h1 class="profile-pic-title">👤</h1>
+            <h2 class="profile-pic-title">Profile Picture</h2>
+            <p class="profile-pic-subtitle">Add a profile picture to personalize your account (optional)</p>
+            
+            <div class="profile-preview-section">
+              <div id="avatar-preview" class="profile-avatar-preview"></div>
+              <div id="file-name" class="file-name"></div>
+            </div>
+
+            <form id="profile-picture-form">
+              <div class="form-group">
+                <div class="file-input-wrapper">
+                  <label for="profile-pic-input" class="file-input-label">
+                    📁 Choose Image or Drag & Drop
+                  </label>
+                  <input type="file" id="profile-pic-input" name="profile_pic" accept="image/*">
+                </div>
+              </div>
+
+              <div id="upload-progress" class="upload-progress">
+                <div class="progress-bar">
+                  <div id="progress-fill" class="progress-fill"></div>
+                </div>
+                <p id="progress-text">Uploading...</p>
+              </div>
+
+              <button type="submit" id="upload-btn" class="btn btn-primary" style="width: 100%; margin-bottom: 15px;">
+                Upload & Save
+              </button>
+
+              <button type="button" id="skip-btn" class="btn btn-outline" style="width: 100%;">
+                Skip for Now
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Solo<span class="text-secondary">E-Com</span></h3>
+          <p>Your trusted destination for electronics and gadgets.</p>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/shop">Shop</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/contact">Contact Us</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Newsletter</h3>
+          <form class="newsletter-form">
+            <input type="email" placeholder="Your email" required>
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 Chen Electronic. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+  <script>
+    const input = document.getElementById('profile-pic-input');
+    const preview = document.getElementById('avatar-preview');
+    const fileName = document.getElementById('file-name');
+    const form = document.getElementById('profile-picture-form');
+    const uploadProgress = document.getElementById('upload-progress');
+    const progressFill = document.getElementById('progress-fill');
+    const progressText = document.getElementById('progress-text');
+    const uploadBtn = document.getElementById('upload-btn');
+    const skipBtn = document.getElementById('skip-btn');
+
+    // Initialize
+    window.addEventListener('load', () => {
+      // Check if user is logged in
+      if (!getToken()) {
+        window.location.href = '/login';
+        return;
+      }
+
+      // Initialize avatar with initial
+      const user = getUser();
+      if (user && preview) {
+        preview.textContent = user.name.charAt(0).toUpperCase();
+      }
+    });
+
+    // Handle file selection
+    if (input) {
+      input.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            // Create an image element
+            const img = document.createElement('img');
+            img.src = event.target.result;
+            img.style.width = '150px';
+            img.style.height = '150px';
+            img.style.borderRadius = '50%';
+            img.style.objectFit = 'cover';
+            img.style.border = '4px solid var(--primary-color)';
+            
+            preview.innerHTML = '';
+            preview.appendChild(img);
+            preview.classList.add('with-image');
+            fileName.textContent = file.name;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    // Drag and drop
+    if (form) {
+      form.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        form.style.opacity = '0.7';
+      });
+
+      form.addEventListener('dragleave', () => {
+        form.style.opacity = '1';
+      });
+
+      form.addEventListener('drop', (e) => {
+        e.preventDefault();
+        form.style.opacity = '1';
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          input.files = files;
+          input.dispatchEvent(new Event('change'));
+        }
+      });
+    }
+
+    // Handle form submission
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (!input.files || !input.files.length) {
+          showNotification('Please select an image', 'info');
+          return;
+        }
+
+        // Disable button and show progress
+        uploadBtn.disabled = true;
+        uploadBtn.textContent = 'Uploading...';
+        uploadProgress.classList.add('active');
+        progressFill.style.width = '0%';
+        progressText.textContent = '0%';
+
+        const formData = new FormData();
+        formData.append('profile_pic', input.files[0]);
+
+        try {
+          const xhr = new XMLHttpRequest();
+          
+          xhr.upload.addEventListener('progress', (e) => {
+            if (e.lengthComputable) {
+              const percentComplete = (e.loaded / e.total) * 100;
+              progressFill.style.width = percentComplete + '%';
+              progressText.textContent = Math.round(percentComplete) + '%';
+            }
+          });
+
+          xhr.addEventListener('load', () => {
+            uploadProgress.classList.remove('active');
+            uploadBtn.disabled = false;
+            uploadBtn.textContent = 'Upload & Save';
+            
+            if (xhr.status === 200) {
+              try {
+                const response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                  showNotification('Profile picture uploaded successfully!', 'success');
+                  setTimeout(() => {
+                    window.location.href = '/account';
+                  }, 1500);
+                } else {
+                  showNotification(response.error || 'Upload failed', 'error');
+                }
+              } catch (e) {
+                showNotification('Upload successful but response parse error', 'success');
+                setTimeout(() => {
+                  window.location.href = '/account';
+                }, 1500);
+              }
+            } else {
+              try {
+                const error = JSON.parse(xhr.responseText);
+                showNotification(error.error || `Upload failed (${xhr.status})`, 'error');
+              } catch {
+                showNotification(`Upload failed (${xhr.status}): ${xhr.responseText || 'Unknown error'}`, 'error');
+              }
+            }
+          });
+
+          xhr.addEventListener('error', () => {
+            uploadProgress.classList.remove('active');
+            uploadBtn.disabled = false;
+            uploadBtn.textContent = 'Upload & Save';
+            showNotification('Network error: Upload failed', 'error');
+          });
+
+          xhr.addEventListener('abort', () => {
+            uploadProgress.classList.remove('active');
+            uploadBtn.disabled = false;
+            uploadBtn.textContent = 'Upload & Save';
+            showNotification('Upload cancelled', 'info');
+          });
+
+          const token = getToken();
+          if (!token) {
+            showNotification('Not logged in. Please refresh and try again.', 'error');
+            uploadProgress.classList.remove('active');
+            uploadBtn.disabled = false;
+            uploadBtn.textContent = 'Upload & Save';
+            return;
+          }
+
+          xhr.open('POST', '/api/profile-picture/upload');
+          xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+          xhr.send(formData);
+        } catch (error) {
+          uploadProgress.classList.remove('active');
+          uploadBtn.disabled = false;
+          uploadBtn.textContent = 'Upload & Save';
+          showNotification('Upload error: ' + error.message, 'error');
+        }
+      });
+    }
+
+    // Skip button
+    if (skipBtn) {
+      skipBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.href = '/account';
+      });
+    }
+  </script>
+</body>
+</html>

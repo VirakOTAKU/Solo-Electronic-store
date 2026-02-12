@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop - Chen Electronic</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="header-top">
+      <div class="container">
+        <div>📧 support@chenelectronic.com | 📞 +855 23 964 285</div>
+        <div>
+          <a href="/about">About Us</a>
+          <a href="/contact">Contact</a>
+          <a href="/account" class="user-link">👤 Login</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="header-main">
+      <div class="container">
+        <a href="/" class="logo" style="display: flex; align-items: center; gap: 10px;">
+          <img src="/img/Chen.png" alt="Chen Logo" style="height: 50px; width: auto;">
+          <span style="font-weight: bold; font-size: 20px;">Chen<span style="color: #e74c3c;">Electronic</span></span>
+        </a>
+        
+        <form class="search-bar">
+          <input type="text" placeholder="Search for products..." id="search-input">
+          <button type="submit">🔍</button>
+        </form>
+        
+        <div class="header-actions">
+          <a href="/cart">
+            🛒 Cart
+            <span class="cart-count">0</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <nav>
+      <div class="container">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/shop">Shop</a></li>
+          <li><a href="/shop?category=Smartphones">Smartphones</a></li>
+          <li><a href="/shop?category=Laptops">Laptops</a></li>
+          <li><a href="/shop?category=Audio">Audio</a></li>
+          <li><a href="/shop?category=Gaming">Gaming</a></li>
+          <li><a href="/shop?featured=1">Featured</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="container-wide">
+        <div class="shop-main-layout">
+          <!-- Sidebar Filters -->
+          <aside class="shop-sidebar">
+            <div class="card filters-card">
+              <h3 class="filters-title">🔍 Filters</h3>
+              
+              <div class="form-group">
+                <label>Category</label>
+                <select id="category-filter" class="form-control">
+                  <option value="">All Categories</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>
+                  <input type="checkbox" id="featured-filter">
+                  Featured Only
+                </label>
+              </div>
+
+              <button class="btn btn-primary btn-full-width" onclick="applyFilters()">
+                Apply Filters
+              </button>
+              
+              <button class="btn btn-outline btn-full-width filters-clear-btn" onclick="clearFilters()">
+                Clear Filters
+              </button>
+            </div>
+          </aside>
+
+          <!-- Products Section -->
+          <div class="shop-products-section">
+            <div class="shop-header">
+              <div>
+                <h1 id="page-title">All Products</h1>
+                <p id="results-count" class="results-count"></p>
+              </div>
+            </div>
+
+            <div id="products-grid" class="grid grid-4">
+              <div class="loading">Loading products...</div>
+            </div>
+
+            <!-- Pagination -->
+            <div id="pagination" class="shop-pagination"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+        <h3>Solo<span class="text-secondary">E-Com</span></h3>
+          <p>Your trusted destination for electronics and gadgets.</p>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/shop">Shop</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/contact">Contact Us</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Customer Service</h3>
+          <ul>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Use</a></li>
+            <li><a href="/dmca">DMCA</a></li>
+            <li><a href="/rss">RSS Feed</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Newsletter</h3>
+          <form class="newsletter-form">
+            <input type="email" placeholder="Your email" required>
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 Chen Electronic. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+  <script>
+    let currentPage = 1;
+    let currentFilters = {};
+
+    // Get URL parameters
+    function getURLParams() {
+      const params = new URLSearchParams(window.location.search);
+      return {
+        category: params.get('category') || '',
+        search: params.get('search') || '',
+        featured: params.get('featured') || '',
+        page: parseInt(params.get('page')) || 1,
+      };
+    }
+
+    // Load categories for filter
+    async function loadCategories() {
+      try {
+        const categories = await getCategories();
+        const select = document.getElementById('category-filter');
+        select.innerHTML = '<option value="">All Categories</option>' +
+          categories.map(cat => `<option value="${cat.category}">${cat.category} (${cat.count})</option>`).join('');
+      } catch (error) {
+        console.error('Failed to load categories');
+      }
+    }
+
+    // Load products
+    async function loadProducts() {
+      const params = getURLParams();
+      currentFilters = params;
+      currentPage = params.page;
+
+      // Update UI with current filters
+      document.getElementById('category-filter').value = params.category;
+      document.getElementById('featured-filter').checked = params.featured === '1';
+      document.getElementById('search-input').value = params.search;
+
+      // Update page title
+      let title = 'All Products';
+      if (params.search) title = `Search: "${params.search}"`;
+      else if (params.category) title = params.category;
+      else if (params.featured) title = 'Featured Products';
+      document.getElementById('page-title').textContent = title;
+
+      try {
+        const data = await getProducts({
+          category: params.category,
+          search: params.search,
+          featured: params.featured,
+          page: params.page,
+          limit: 12,
+        });
+
+        renderProducts(data.products);
+        renderPagination(data.page, data.totalPages, data.total);
+      } catch (error) {
+        document.getElementById('products-grid').innerHTML = '<p class="alert alert-error">Failed to load products</p>';
+      }
+    }
+
+    // Render products
+    function renderProducts(products) {
+      if (products.length === 0) {
+        document.getElementById('products-grid').innerHTML = '<p class="no-products-message">No products found</p>';
+        return;
+      }
+
+      const html = products.map(product => {
+        const hasDiscount = product.sale_price && product.sale_price < product.price;
+        const displayPrice = product.sale_price || product.price;
+        const discount = hasDiscount ? Math.round((1 - product.sale_price / product.price) * 100) : 0;
+        
+        return `
+          <div class="card product-card" onclick="window.location.href='/product/${product.id}'" style="cursor: pointer;">
+            ${hasDiscount ? `<div class="badge">-${discount}%</div>` : ''}
+            ${product.featured ? '<div class="badge new product-badge-featured">Featured</div>' : ''}
+            <a href="/product/${product.id}" style="text-decoration: none; color: inherit;">
+              <img src="${product.image}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/300x250?text=No+Image'">
+            </a>
+            <div class="card-body">
+              <h3><a href="/product/${product.id}">${product.name}</a></h3>
+              <p class="product-brand">${product.brand}</p>
+              <div class="product-rating">
+                <span>${renderStars(product.rating)}</span>
+                <span>(${product.reviews_count})</span>
+              </div>
+              <div class="product-price">
+                <span class="price">${formatPrice(displayPrice)}</span>
+                ${hasDiscount ? `<span class="old-price">${formatPrice(product.price)}</span>` : ''}
+              </div>
+              <button class="btn btn-primary product-btn-full" onclick='addToCart(${JSON.stringify(product).replace(/'/g, "&#39;")})'>
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      // Use animation helper for smooth transition
+      animateProductsTransition(() => {
+        document.getElementById('products-grid').innerHTML = html;
+      });
+    }
+
+    // Render pagination
+    function renderPagination(page, totalPages, total) {
+      document.getElementById('results-count').textContent = `Showing ${total} products`;
+
+      if (totalPages <= 1) {
+        document.getElementById('pagination').innerHTML = '';
+        return;
+      }
+
+      let html = '<div class="pagination-controls">';
+      
+      if (page > 1) {
+        html += `<button class="btn btn-outline" onclick="goToPage(${page - 1})">← Previous</button>`;
+      }
+      
+      for (let i = Math.max(1, page - 2); i <= Math.min(totalPages, page + 2); i++) {
+        if (i === page) {
+          html += `<button class="btn btn-primary">${i}</button>`;
+        } else {
+          html += `<button class="btn btn-outline" onclick="goToPage(${i})">${i}</button>`;
+        }
+      }
+      
+      if (page < totalPages) {
+        html += `<button class="btn btn-outline" onclick="goToPage(${page + 1})">Next →</button>`;
+      }
+      
+      html += '</div>';
+      document.getElementById('pagination').innerHTML = html;
+    }
+
+    // Apply filters
+    function applyFilters() {
+      const category = document.getElementById('category-filter').value;
+      const featured = document.getElementById('featured-filter').checked ? '1' : '';
+      
+      const params = new URLSearchParams();
+      if (category) params.set('category', category);
+      if (featured) params.set('featured', featured);
+      if (currentFilters.search) params.set('search', currentFilters.search);
+      
+      window.location.href = `/shop?${params.toString()}`;
+    }
+
+    // Clear filters
+    function clearFilters() {
+      window.location.href = '/shop';
+    }
+
+    // Go to page
+    function goToPage(page) {
+      const params = new URLSearchParams(window.location.search);
+      params.set('page', page);
+      window.location.href = `/shop?${params.toString()}`;
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCategories();
+      loadProducts();
+      
+      // Listen for currency changes
+      document.addEventListener('currencyChanged', () => {
+        loadProducts();
+      });
+    });
+    
+    // Function to reload prices on currency change
+    function reloadPricesOnPage() {
+      loadProducts();
+    }
+  </script>
+</body>
+</html>

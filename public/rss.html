@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSS Feed - Chen Electronic</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="header-top">
+      <div class="container">
+        <div>📧 support@chenelectronic.com | 📞 +855 23 964 285</div>
+        <div>
+          <a href="/about">About Us</a>
+          <a href="/contact">Contact</a>
+          <a href="/account" class="user-link">👤 Login</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="header-main">
+      <div class="container">
+        <a href="/" class="logo" style="display: flex; align-items: center; gap: 10px;">
+          <img src="/img/Chen.png" alt="Chen Logo" style="height: 50px; width: auto;">
+          <span style="font-weight: bold; font-size: 20px;">Chen<span style="color: #e74c3c;">Electronic</span></span>
+        </a>
+        
+        <form class="search-bar">
+          <input type="text" placeholder="Search for products...">
+          <button type="submit">🔍</button>
+        </form>
+        
+        <div class="header-actions">
+          <a href="/cart">
+            🛒 Cart
+            <span class="cart-count">0</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <nav>
+      <div class="container">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/shop">Shop</a></li>
+          <li><a href="/shop?category=Smartphones">Smartphones</a></li>
+          <li><a href="/shop?category=Laptops">Laptops</a></li>
+          <li><a href="/shop?category=Audio">Audio</a></li>
+          <li><a href="/shop?category=Gaming">Gaming</a></li>
+          <li><a href="/shop?featured=1">Featured</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <div style="max-width: 900px; margin: 0 auto;">
+          <h1 style="margin-bottom: 20px;">📡 RSS Feed</h1>
+          <p style="color: var(--gray); margin-bottom: 40px;">Stay updated with our latest products and deals</p>
+
+          <div class="card" style="padding: 40px; margin-bottom: 40px; text-align: center; background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: #fff;">
+            <div style="font-size: 4rem; margin-bottom: 20px;">📰</div>
+            <h2 style="color: #fff; margin-bottom: 20px;">Subscribe to Our RSS Feed</h2>
+            <p style="opacity: 0.9; margin-bottom: 30px; font-size: 1.125rem;">
+              Get the latest product updates delivered directly to your RSS reader
+            </p>
+            <a href="/feed.xml" class="btn btn-secondary" style="font-size: 1.1rem; padding: 15px 40px;">
+              📡 Subscribe to RSS Feed
+            </a>
+          </div>
+
+          <div style="line-height: 1.8; color: var(--dark);">
+            <h2 style="margin-bottom: 20px;">What is RSS?</h2>
+            <p style="margin-bottom: 30px;">
+              RSS (Really Simple Syndication) is a web feed that allows you to access updates to online content in a standardized format. By subscribing to our RSS feed, you'll receive automatic notifications whenever we add new products or publish updates.
+            </p>
+
+            <h2 style="margin-top: 40px; margin-bottom: 20px;">📋 Our Feed Includes</h2>
+            <div class="grid grid-2" style="margin-bottom: 40px;">
+              <div class="card" style="padding: 25px;">
+                <h3 style="margin-bottom: 15px;">🆕 New Products</h3>
+                <p style="color: var(--gray);">Be the first to know about our latest arrivals and new product launches</p>
+              </div>
+
+              <div class="card" style="padding: 25px;">
+                <h3 style="margin-bottom: 15px;">🏷️ Special Deals</h3>
+                <p style="color: var(--gray);">Never miss out on exclusive promotions and limited-time offers</p>
+              </div>
+
+              <div class="card" style="padding: 25px;">
+                <h3 style="margin-bottom: 15px;">⭐ Featured Items</h3>
+                <p style="color: var(--gray);">Get updates on our featured products and editor's picks</p>
+              </div>
+
+              <div class="card" style="padding: 25px;">
+                <h3 style="margin-bottom: 15px;">📰 Blog Posts</h3>
+                <p style="color: var(--gray);">Stay informed with tech news, reviews, and buying guides</p>
+              </div>
+            </div>
+
+            <h2 style="margin-top: 40px; margin-bottom: 20px;">How to Subscribe</h2>
+            <div style="background: var(--light); padding: 30px; border-radius: 12px; margin-bottom: 40px;">
+              <ol style="margin-left: 20px; line-height: 2;">
+                <li>Choose an RSS reader application (Feedly, Inoreader, NewsBlur, etc.)</li>
+                <li>Copy our RSS feed URL: <code style="background: #fff; padding: 5px 10px; border-radius: 4px; color: var(--primary-color); font-weight: 600;">http://localhost:3000/feed.xml</code></li>
+                <li>Add the feed URL to your RSS reader</li>
+                <li>Start receiving updates automatically</li>
+              </ol>
+            </div>
+
+            <h2 style="margin-top: 40px; margin-bottom: 20px;">🔗 Quick Access</h2>
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 40px;">
+              <a href="/feed.xml" class="btn btn-primary" target="_blank">
+                📄 View RSS Feed
+              </a>
+              <a href="https://feedly.com/i/subscription/feed/http://localhost:3000/feed.xml" class="btn btn-outline" target="_blank">
+                Subscribe via Feedly
+              </a>
+            </div>
+
+            <h2 style="margin-top: 40px; margin-bottom: 20px;">Popular RSS Readers</h2>
+            <div class="grid grid-3" style="margin-bottom: 40px;">
+              <div class="card" style="padding: 20px; text-align: center;">
+                <h4 style="margin-bottom: 10px;">Feedly</h4>
+                <p style="font-size: 0.875rem; color: var(--gray);">Web & Mobile</p>
+              </div>
+              <div class="card" style="padding: 20px; text-align: center;">
+                <h4 style="margin-bottom: 10px;">Inoreader</h4>
+                <p style="font-size: 0.875rem; color: var(--gray);">Web & Mobile</p>
+              </div>
+              <div class="card" style="padding: 20px; text-align: center;">
+                <h4 style="margin-bottom: 10px;">NewsBlur</h4>
+                <p style="font-size: 0.875rem; color: var(--gray);">Web & Mobile</p>
+              </div>
+              <div class="card" style="padding: 20px; text-align: center;">
+                <h4 style="margin-bottom: 10px;">The Old Reader</h4>
+                <p style="font-size: 0.875rem; color: var(--gray);">Web</p>
+              </div>
+              <div class="card" style="padding: 20px; text-align: center;">
+                <h4 style="margin-bottom: 10px;">Flipboard</h4>
+                <p style="font-size: 0.875rem; color: var(--gray);">Mobile</p>
+              </div>
+              <div class="card" style="padding: 20px; text-align: center;">
+                <h4 style="margin-bottom: 10px;">Feedbin</h4>
+                <p style="font-size: 0.875rem; color: var(--gray);">Web & Mobile</p>
+              </div>
+            </div>
+
+            <div class="card" style="padding: 30px; background: #e7f3ff; border: 1px solid #2563eb;">
+              <h3 style="margin-bottom: 15px;">💡 Pro Tip</h3>
+              <p style="margin: 0; color: var(--dark);">
+                If you prefer email updates, consider subscribing to our newsletter instead. You'll receive curated updates directly in your inbox!
+              </p>
+              <a href="/" class="btn btn-primary" style="margin-top: 20px;">Subscribe to Newsletter</a>
+            </div>
+
+            <h2 style="margin-top: 40px; margin-bottom: 20px;">Need Help?</h2>
+            <p style="margin-bottom: 20px;">
+              If you have any questions about our RSS feed or need assistance setting it up, please don't hesitate to contact us:
+            </p>
+            <ul style="list-style: none; margin: 20px 0;">
+              <li style="margin-bottom: 10px;">📧 Email: support@chenelectronic.com</li>
+              <li style="margin-bottom: 10px;">📞 Phone: +855 23 964 285</li>
+              <li style="margin-bottom: 10px;">💬 <a href="/contact" style="color: var(--primary-color);">Contact Form</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Solo<span style="color: var(--secondary-color);">E-Com</span></h3>
+          <p>Your trusted destination for electronics and gadgets.</p>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/shop">Shop</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/contact">Contact Us</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Customer Service</h3>
+          <ul>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Use</a></li>
+            <li><a href="/dmca">DMCA</a></li>
+            <li><a href="/rss">RSS Feed</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Newsletter</h3>
+          <form class="newsletter-form">
+            <input type="email" placeholder="Your email" required>
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 Chen Electronic. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

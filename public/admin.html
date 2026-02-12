@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Chen Electronic</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <div class="logo">
+        <a href="/">
+          <img src="/img/Chen.png" alt="Chen Electronic Logo" class="logo-img">
+          <span>Admin</span>
+        </a>
+      </div>
+      <div class="nav-links">
+        <a href="/">View Site</a>
+        <a href="/account">My Account</a>
+        <a href="#" onclick="logout()">Logout</a>
+      </div>
+    </nav>
+  </header>
+
+  <div class="admin-container">
+    <div class="admin-header">
+      <h1>Admin Dashboard</h1>
+      <p>Manage your e-commerce store</p>
+    </div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="showTab('overview')">Overview</button>
+      <button class="admin-tab" onclick="showTab('products')">Products</button>
+      <button class="admin-tab" onclick="showTab('orders')">Orders</button>
+      <button class="admin-tab" onclick="showTab('users')">Users</button>
+      <button class="admin-tab" onclick="showTab('reviews')">Reviews</button>
+      <button class="admin-tab" onclick="showTab('categories')">Categories</button>
+      <button class="admin-tab" onclick="showTab('contacts')">Contact Messages</button>
+      <button class="admin-tab" onclick="showTab('newsletter')">Newsletter</button>
+    </div>
+
+    <!-- Overview Panel -->
+    <div id="overview-panel" class="admin-panel active">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Total Products</h3>
+          <div class="value" id="stat-products">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Total Orders</h3>
+          <div class="value" id="stat-orders">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Total Users</h3>
+          <div class="value" id="stat-users">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Newsletter Subscribers</h3>
+          <div class="value" id="stat-newsletter">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products Panel -->
+    <div id="products-panel" class="admin-panel">
+      <div class="form-section">
+        <h3>Add New Product</h3>
+        <form id="product-form" onsubmit="saveProduct(event)">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Product Name *</label>
+              <input type="text" name="name" required>
+            </div>
+            <div class="form-group">
+              <label>Price *</label>
+              <input type="number" name="price" step="0.01" required>
+            </div>
+            <div class="form-group">
+              <label>Sale Price</label>
+              <input type="number" name="sale_price" step="0.01">
+            </div>
+            <div class="form-group">
+              <label>Category *</label>
+              <select name="category" required>
+                <option value="">-- Select Category --</option>
+                <option value="Smartphones">Smartphones</option>
+                <option value="Laptops">Laptops</option>
+                <option value="Audio">Audio</option>
+                <option value="Gaming">Gaming</option>
+                <option value="Accessories">Accessories</option>
+                <option value="Tablets">Tablets</option>
+                <option value="Smartwatches">Smartwatches</option>
+                <option value="Cameras">Cameras</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Brand</label>
+              <input type="text" name="brand">
+            </div>
+            <div class="form-group">
+              <label>Stock *</label>
+              <input type="number" name="stock" required>
+            </div>
+            <div class="form-group form-group-full">
+              <label>Description</label>
+              <textarea name="description" rows="3"></textarea>
+            </div>
+            <div class="form-group form-group-full">
+              <label>Image URL</label>
+              <input type="text" name="image">
+            </div>
+            <div class="form-group">
+              <label>
+                <input type="checkbox" name="featured">
+                Featured Product
+              </label>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-spacing">Add Product</button>
+        </form>
+      </div>
+
+      <div class="data-table">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Category</th>
+              <th>Stock</th>
+              <th>Featured</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="products-list">
+            <tr><td colspan="7">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Orders Panel -->
+    <div id="orders-panel" class="admin-panel">
+      <div class="data-table">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>User</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Payment</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="orders-list">
+            <tr><td colspan="7">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Users Panel -->
+    <div id="users-panel" class="admin-panel">
+      <button class="btn btn-primary btn-spacing-bottom" onclick="showCreateUserModal()">Create New User</button>
+      <div class="data-table">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Joined</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="users-list">
+            <tr><td colspan="6">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Reviews Panel -->
+    <div id="reviews-panel" class="admin-panel">
+      <div class="data-table">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Product</th>
+              <th>User</th>
+              <th>Rating</th>
+              <th>Comment</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="reviews-list">
+            <tr><td colspan="7">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Categories Panel -->
+    <div id="categories-panel" class="admin-panel">
+      <div class="data-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Product Count</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="categories-list">
+            <tr><td colspan="3">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Contact Messages Panel -->
+    <div id="contacts-panel" class="admin-panel">
+      <div class="data-table">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Subject</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="contacts-list">
+            <tr><td colspan="6">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Newsletter Panel -->
+    <div id="newsletter-panel" class="admin-panel">
+      <div class="data-table">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Email</th>
+              <th>Subscribed Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="newsletter-list">
+            <tr><td colspan="4">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Product Modal -->
+  <div id="edit-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Edit Product</h3>
+        <span class="modal-close" onclick="closeModal('edit-modal')">&times;</span>
+      </div>
+      <form id="edit-form" onsubmit="updateProduct(event)">
+        <input type="hidden" name="id">
+        <div class="form-group">
+          <label>Product Name *</label>
+          <input type="text" name="name" required>
+        </div>
+        <div class="form-group">
+          <label>Price *</label>
+          <input type="number" name="price" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label>Sale Price</label>
+          <input type="number" name="sale_price" step="0.01">
+        </div>
+        <div class="form-group">
+          <label>Category *</label>
+          <select name="category" required>
+            <option value="">-- Select Category --</option>
+            <option value="Smartphones">Smartphones</option>
+            <option value="Laptops">Laptops</option>
+            <option value="Audio">Audio</option>
+            <option value="Gaming">Gaming</option>
+            <option value="Accessories">Accessories</option>
+            <option value="Tablets">Tablets</option>
+            <option value="Smartwatches">Smartwatches</option>
+            <option value="Cameras">Cameras</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Brand</label>
+          <input type="text" name="brand">
+        </div>
+        <div class="form-group">
+          <label>Stock *</label>
+          <input type="number" name="stock" required>
+        </div>
+        <div class="form-group form-group-full">
+          <label>Description</label>
+          <textarea name="description" rows="3"></textarea>
+        </div>
+        <div class="form-group form-group-full">
+          <label>Image URL</label>
+          <input type="text" name="image">
+        </div>
+        <div class="form-group">
+          <label>
+            <input type="checkbox" name="featured">
+            Featured Product
+          </label>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Product</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Order Modal -->
+  <div id="edit-order-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Edit Order</h3>
+        <span class="modal-close" onclick="closeModal('edit-order-modal')">&times;</span>
+      </div>
+      <form id="edit-order-form" onsubmit="updateOrder(event)">
+        <input type="hidden" name="id">
+        <div class="form-group">
+          <label>Status *</label>
+          <select name="status" required>
+            <option value="pending">Pending</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Payment Method</label>
+          <input type="text" name="payment_method">
+        </div>
+        <div class="form-group">
+          <label>Shipping Address</label>
+          <textarea name="shipping_address" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Order</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Create User Modal -->
+  <div id="create-user-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Create New User</h3>
+        <span class="modal-close" onclick="closeModal('create-user-modal')">&times;</span>
+      </div>
+      <form id="create-user-form" onsubmit="createUser(event)">
+        <div class="form-group">
+          <label>Name *</label>
+          <input type="text" name="name" required>
+        </div>
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label>Password *</label>
+          <input type="password" name="password" required minlength="6">
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="text" name="phone">
+        </div>
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" name="address">
+        </div>
+        <div class="form-group">
+          <label>City</label>
+          <input type="text" name="city">
+        </div>
+        <div class="form-group">
+          <label>Country</label>
+          <input type="text" name="country">
+        </div>
+        <button type="submit" class="btn btn-primary btn-spacing">Create User</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit User Modal -->
+  <div id="edit-user-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Edit User</h3>
+        <span class="modal-close" onclick="closeModal('edit-user-modal')">&times;</span>
+      </div>
+      <form id="edit-user-form" onsubmit="updateUser(event)">
+        <input type="hidden" name="id">
+        <div class="form-group">
+          <label>Name *</label>
+          <input type="text" name="name" required>
+        </div>
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="text" name="phone">
+        </div>
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" name="address">
+        </div>
+        <div class="form-group">
+          <label>City</label>
+          <input type="text" name="city">
+        </div>
+        <div class="form-group">
+          <label>Country</label>
+          <input type="text" name="country">
+        </div>
+        <button type="submit" class="btn btn-primary btn-spacing">Update User</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+    let token = localStorage.getItem('token');
+
+    // Check authentication
+    if (!token) {
+      window.location.href = '/login.html';
+    }
+
+    // Verify admin user and initialize
+    async function initAdmin() {
+      try {
+        const res = await fetch(`${API_URL}/auth/me`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        
+        if (!data.user) {
+          localStorage.removeItem('token');
+          window.location.href = '/login.html';
+          return;
+        }
+        
+        if (data.user.email !== 'admin@chenelectronic.com') {
+          showNotification('Admin access only', 'error', 'Access Denied');
+          setTimeout(() => window.location.href = '/', 1500);
+          return;
+        }
+        
+        // Auth successful - load data
+        loadStats();
+        loadProducts();
+      } catch (err) {
+        console.error('Auth error:', err);
+        showNotification('Make sure the server is running on port 3000', 'error', 'Connection Error');
+        setTimeout(() => {
+          localStorage.removeItem('token');
+          window.location.href = '/login.html';
+        }, 1500);
+      }
+    }
+
+    // Initialize when page loads
+    initAdmin();
+
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = '/login.html';
+    }
+
+    function showTab(tab) {
+      // Hide all panels
+      document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+      
+      // Show selected panel
+      document.getElementById(tab + '-panel').classList.add('active');
+      event.target.classList.add('active');
+      
+      // Load data for the selected tab
+      switch(tab) {
+        case 'overview': loadStats(); break;
+        case 'products': loadProducts(); break;
+        case 'orders': loadOrders(); break;
+        case 'users': loadUsers(); break;
+        case 'reviews': loadReviews(); break;
+        case 'categories': loadCategories(); break;
+        case 'contacts': loadContacts(); break;
+        case 'newsletter': loadNewsletter(); break;
+      }
+    }
+
+    async function loadStats() {
+      try {
+        const res = await fetch(`${API_URL}/admin/stats`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const stats = await res.json();
+        document.getElementById('stat-products').textContent = stats.products || 0;
+        document.getElementById('stat-orders').textContent = stats.orders || 0;
+        document.getElementById('stat-users').textContent = stats.users || 0;
+        document.getElementById('stat-newsletter').textContent = stats.newsletter || 0;
+      } catch (err) {
+        console.error('Error loading stats:', err);
+      }
+    }
+
+    async function loadProducts() {
+      try {
+        const res = await fetch(`${API_URL}/products`);
+        const data = await res.json();
+        const products = data.products || data;
+        document.getElementById('products-list').innerHTML = products.map(p => `
+          <tr>
+            <td>${p.id}</td>
+            <td>${p.name}</td>
+            <td>$${p.sale_price || p.price}</td>
+            <td>${p.category}</td>
+            <td>${p.stock}</td>
+            <td>${p.featured ? '⭐' : ''}</td>
+            <td>
+              <button class="action-btn edit" onclick="editProduct(${p.id})">Edit</button>
+              <button class="action-btn delete" onclick="deleteProduct(${p.id})">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error('Error loading products:', err);
+      }
+    }
+
+    async function saveProduct(e) {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData);
+      data.featured = formData.has('featured') ? 1 : 0;
+
+      try {
+        const res = await fetch(`${API_URL}/admin/products`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+          showNotification('Product has been added to your store', 'success', 'Product Added');
+          e.target.reset();
+          loadProducts();
+        } else {
+          showNotification('Unable to add product. Please try again', 'error', 'Error');
+        }
+      } catch (err) {
+        console.error('Error saving product:', err);
+        showNotification('Failed to add product', 'error', 'Error');
+      }
+    }
+
+    async function editProduct(id) {
+      try {
+        const res = await fetch(`${API_URL}/products/${id}`);
+        const product = await res.json();
+        
+        const form = document.getElementById('edit-form');
+        form.elements.id.value = product.id;
+        form.elements.name.value = product.name;
+        form.elements.price.value = product.price;
+        form.elements.sale_price.value = product.sale_price || '';
+        form.elements.category.value = product.category;
+        form.elements.brand.value = product.brand || '';
+        form.elements.stock.value = product.stock;
+        form.elements.description.value = product.description || '';
+        form.elements.image.value = product.image || '';
+        form.elements.featured.checked = product.featured === 1;
+        
+        document.getElementById('edit-modal').classList.add('active');
+      } catch (err) {
+        console.error('Error loading product:', err);
+      }
+    }
+
+    async function updateProduct(e) {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData);
+      data.featured = formData.has('featured') ? 1 : 0;
+      const id = data.id;
+      delete data.id;
+
+      try {
+        const res = await fetch(`${API_URL}/admin/products/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+          showNotification('Product has been updated successfully', 'success', 'Product Updated');
+          closeModal('edit-modal');
+          loadProducts();
+        } else {
+          showNotification('Unable to update product. Please try again', 'error', 'Error');
+        }
+      } catch (err) {
+        console.error('Error updating product:', err);
+        showNotification('Failed to update product', 'error', 'Error');
+      }
+    }
+
+    async function deleteProduct(id) {
+      if (!confirm('Are you sure you want to delete this product?')) return;
+
+      try {
+        const res = await fetch(`${API_URL}/admin/products/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (res.ok) {
+          showNotification('Product has been removed from your store', 'success', 'Product Deleted');
+          loadProducts();
+        } else {
+          showNotification('Unable to delete product. Please try again', 'error', 'Error');
+        }
+      } catch (err) {
+        console.error('Error deleting product:', err);
+        showNotification('Failed to delete product', 'error', 'Error');
+      }
+    }
+
+    async function loadOrders() {
+      try {
+        const res = await fetch(`${API_URL}/admin/orders`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const orders = await res.json();
+        document.getElementById('orders-list').innerHTML = orders.map(o => `
+          <tr>
+            <td>${o.id}</td>
+            <td>${o.user_name}</td>
+            <td>$${o.total}</td>
+            <td><span class="status-badge ${o.status}">${o.status}</span></td>
+            <td>${o.payment_method || 'N/A'}</td>
+            <td>${new Date(o.created_at).toLocaleDateString()}</td>
+            <td>
+              <button class="action-btn edit" onclick="editOrder(${o.id})">Edit</button>
+              <button class="action-btn delete" onclick="deleteOrder(${o.id})">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error('Error loading orders:', err);
+      }
+    }
+
+    async function editOrder(id) {
+      try {
+        const res = await fetch(`${API_URL}/admin/orders/${id}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const order = await res.json();
+        
+        const form = document.getElementById('edit-order-form');
+        form.elements.id.value = order.id;
+        form.elements.status.value = order.status;
+        form.elements.payment_method.value = order.payment_method || '';
+        form.elements.shipping_address.value = order.shipping_address || '';
+        
+        document.getElementById('edit-order-modal').classList.add('active');
+      } catch (err) {
+        console.error('Error loading order:', err);
+      }
+    }
+
+    async function updateOrder(e) {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData);
+      const id = data.id;
+      delete data.id;
+
+      try {
+        const res = await fetch(`${API_URL}/admin/orders/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+          showNotification('Order has been updated successfully', 'success', 'Order Updated');
+          closeModal('edit-order-modal');
+          loadOrders();
+        } else {
+          showNotification('Unable to update order. Please try again', 'error', 'Error');
+        }
+      } catch (err) {
+        console.error('Error updating order:', err);
+        showNotification('Failed to update order', 'error', 'Error');
+      }
+    }
+
+    async function deleteOrder(id) {
+      if (!confirm('Are you sure you want to delete this order?')) return;
+
+      try {
+        const res = await fetch(`${API_URL}/admin/orders/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (res.ok) {
+          showNotification('Order has been removed successfully', 'success', 'Order Deleted');
+          loadOrders();
+        } else {
+          showNotification('Unable to delete order. Please try again', 'error', 'Error');
+        }
+      } catch (err) {
+        console.error('Error deleting order:', err);
+        showNotification('Failed to delete order', 'error', 'Error');
+      }
+    }
+
+    async function loadUsers() {
+      try {
+        const res = await fetch(`${API_URL}/admin/users`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const users = await res.json();
+        document.getElementById('users-list').innerHTML = users.map(u => `
+          <tr>
+            <td>${u.id}</td>
+            <td>${u.name}</td>
+            <td>${u.email}</td>
+            <td>${u.phone || 'N/A'}</td>
+            <td>${new Date(u.created_at).toLocaleDateString()}</td>
+            <td>
+              <button class="action-btn edit" onclick="editUser(${u.id})">Edit</button>
+              <button class="action-btn delete" onclick="deleteUser(${u.id})">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error('Error loading users:', err);
+      }
+    }
+
+    function showCreateUserModal() {
+      document.getElementById('create-user-modal').classList.add('active');
+    }
+
+    async function createUser(e) {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData);
+
+      try {
+        const res = await fetch(`${API_URL}/admin/users`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+          showNotification('New user account has been created', 'success', 'User Created');
+          closeModal('create-user-modal');
+          e.target.reset();
+          loadUsers();
+        } else {
+          const error = await res.json();
+          showNotification(error.message || 'Unable to create user account', 'error', 'Error');
+        }
+      } catch (err) {
+        console.error('Error creating user:', err);
+        showNotification('Failed to create user', 'error', 'Error');
+      }
+    }
+
+    async function editUser(id) {
+      try {
+        const res = await fetch(`${API_URL}/admin/users/${id}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const user = await res.json();
+        
+        const form = document.getElementById('edit-user-form');
+        form.elements.id.value = user.id;
+        form.elements.name.value = user.name;
+        form.elements.email.value = user.email;
+        form.elements.phone.value = user.phone || '';
+        form.elements.address.value = user.address || '';
+        form.elements.city.value = user.city || '';
+        form.elements.country.value = user.country || '';
+        
+        document.getElementById('edit-user-modal').classList.add('active');
+      } catch (err) {
+        console.error('Error loading user:', err);
+      }
+    }
+
+    async function updateUser(e) {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData);
+      const id = data.id;
+      delete data.id;
+
+      try {
+        const res = await fetch(`${API_URL}/admin/users/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+          showNotification('User profile has been updated successfully', 'success', 'User Updated');
+          closeModal('edit-user-modal');
+          loadUsers();
+        } else {
+          showNotification('Unable to update user. Please try again', 'error', 'Error');
+        }
+      } catch (err) {
+        console.error('Error updating user:', err);
+        showNotification('Failed to update user', 'error', 'Error');
+      }
+    }
+
+    async function deleteUser(id) {
+      if (!confirm('Are you sure you want to delete this user?')) return;
+
+      try {
+        const res = await fetch(`${API_URL}/admin/users/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (res.ok) {
+          showNotification('User account has been deleted', 'success', 'User Deleted');
+          loadUsers();
+        } else {
+          showNotification('Unable to delete user. Please try again', 'error', 'Error');
+        }
+      } catch (err) {
+        console.error('Error deleting user:', err);
+        showNotification('Failed to delete user', 'error', 'Error');
+      }
+    }
+
+    async function loadReviews() {
+      try {
+        const res = await fetch(`${API_URL}/admin/reviews`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const reviews = await res.json();
+        document.getElementById('reviews-list').innerHTML = reviews.map(r => `
+          <tr>
+            <td>${r.id}</td>
+            <td>${r.product_name || 'N/A'}</td>
+            <td>${r.user_name}</td>
+            <td>${'⭐'.repeat(r.rating)}</td>
+            <td>${r.comment ? r.comment.substring(0, 50) + '...' : 'N/A'}</td>
+            <td>${new Date(r.created_at).toLocaleDateString()}</td>
+            <td>
+              <button class="action-btn delete" onclick="deleteReview(${r.id})">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error('Error loading reviews:', err);
+      }
+    }
+
+    async function deleteReview(id) {
+      if (!confirm('Are you sure you want to delete this review?')) return;
+
+      try {
+        const res = await fetch(`${API_URL}/admin/reviews/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (res.ok) {
+          showNotification('Review has been removed', 'success', 'Review Deleted');
+          loadReviews();
+        } else {
+          showNotification('Unable to delete review. Please try again', 'error', 'Error');
+        }
+      } catch (err) {
+        console.error('Error deleting review:', err);
+        showNotification('Failed to delete review', 'error', 'Error');
+      }
+    }
+
+    async function loadCategories() {
+      try {
+        const res = await fetch(`${API_URL}/products`);
+        const data = await res.json();
+        const products = data.products || data;
+        
+        const categories = {};
+        products.forEach(p => {
+          categories[p.category] = (categories[p.category] || 0) + 1;
+        });
+
+        document.getElementById('categories-list').innerHTML = Object.entries(categories).map(([cat, count]) => `
+          <tr>
+            <td>${cat}</td>
+            <td>${count}</td>
+            <td>
+              <button class="action-btn delete" onclick="deleteCategory('${cat}')">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error('Error loading categories:', err);
+      }
+    }
+
+    async function deleteCategory(category) {
+      if (!confirm(`Delete all products in category "${category}"?`)) return;
+
+      try {
+        const res = await fetch(`${API_URL}/admin/categories/${encodeURIComponent(category)}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (res.ok) {
+          showNotification('Category and all its products have been deleted', 'success', 'Category Deleted');
+          loadCategories();
+          loadProducts();
+        } else {
+          showNotification('Unable to delete category. Please try again', 'error', 'Error');
+        }
+      } catch (err) {
+        console.error('Error deleting category:', err);
+        showNotification('Failed to delete category', 'error', 'Error');
+      }
+    }
+
+    async function loadContacts() {
+      try {
+        const res = await fetch(`${API_URL}/admin/contacts`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const contacts = await res.json();
+        document.getElementById('contacts-list').innerHTML = contacts.map(c => `
+          <tr>
+            <td>${c.id}</td>
+            <td>${c.name}</td>
+            <td>${c.email}</td>
+            <td>${c.subject}</td>
+            <td>${new Date(c.created_at).toLocaleDateString()}</td>
+            <td>
+              <button class="action-btn delete" onclick="deleteContact(${c.id})">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error('Error loading contacts:', err);
+      }
+    }
+
+    async function deleteContact(id) {
+      if (!confirm('Are you sure you want to delete this message?')) return;
+
+      try {
+        const res = await fetch(`${API_URL}/admin/contacts/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (res.ok) {
+          showNotification('Message has been deleted', 'success', 'Message Deleted');
+          loadContacts();
+        } else {
+          showNotification('Unable to delete message. Please try again', 'error', 'Error');
+        }
+      } catch (err) {
+        console.error('Error deleting message:', err);
+        showNotification('Failed to delete message', 'error', 'Error');
+      }
+    }
+
+    async function loadNewsletter() {
+      try {
+        const res = await fetch(`${API_URL}/admin/newsletter`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const subscribers = await res.json();
+        document.getElementById('newsletter-list').innerHTML = subscribers.map(s => `
+          <tr>
+            <td>${s.id}</td>
+            <td>${s.email}</td>
+            <td>${new Date(s.created_at).toLocaleDateString()}</td>
+            <td>
+              <button class="action-btn delete" onclick="deleteSubscriber(${s.id})">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error('Error loading newsletter:', err);
+      }
+    }
+
+    async function deleteSubscriber(id) {
+      if (!confirm('Are you sure you want to delete this subscriber?')) return;
+
+      try {
+        const res = await fetch(`${API_URL}/admin/newsletter/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (res.ok) {
+          showNotification('Subscriber has been removed from the newsletter', 'success', 'Subscriber Deleted');
+          loadNewsletter();
+        } else {
+          showNotification('Unable to delete subscriber. Please try again', 'error', 'Error');
+        }
+      } catch (err) {
+        console.error('Error deleting subscriber:', err);
+        showNotification('Failed to delete subscriber', 'error', 'Error');
+      }
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    // Close modal when clicking outside
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.classList.remove('active');
+        }
+      });
+    });
+
+    // ============ NOTIFICATION SYSTEM ============
+    function showNotification(message, type = 'info', title = null) {
+      let container = document.querySelector('.notification-container');
+      if (!container) {
+        container = document.createElement('div');
+        container.className = 'notification-container';
+        document.body.appendChild(container);
+      }
+
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      
+      let icon = '✓';
+      let defaultTitle = 'Success';
+      
+      if (type === 'error') {
+        icon = '✕';
+        defaultTitle = 'Error';
+      } else if (type === 'info') {
+        icon = 'ℹ';
+        defaultTitle = 'Info';
+      }
+
+      notification.innerHTML = `
+        <div class="notification-icon">${icon}</div>
+        <div class="notification-content">
+          <p class="notification-title">${title || defaultTitle}</p>
+          <p class="notification-message">${message}</p>
+        </div>
+        <button class="notification-close" onclick="this.parentElement.classList.add('closing'); setTimeout(() => this.parentElement.remove(), 300)">×</button>
+      `;
+
+      container.appendChild(notification);
+
+      // Auto-close after 4 seconds
+      setTimeout(() => {
+        if (notification.parentElement) {
+          notification.classList.add('closing');
+          setTimeout(() => notification.remove(), 300);
+        }
+      }, 4000);
+    }
+  </script>
+</body>
+</html>
