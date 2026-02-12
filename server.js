@@ -43,24 +43,27 @@ app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'public', 'adm
 // RSS XML Feed
 app.get('/feed.xml', async (req, res) => {
   const products = await db.allAsync('SELECT * FROM products ORDER BY created_at DESC LIMIT 20');
+  const protocol = req.secure ? 'https' : 'http';
+  const host = `${protocol}://${req.get('host')}`;
+  
   let rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Chen Electronic - Electronics &amp; Gadgets</title>
-    <link>http://localhost:${PORT}</link>
+    <link>${host}</link>
     <description>Latest electronics and gadgets from Chen Electronic</description>
     <language>en-us</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-    <atom:link href="http://localhost:${PORT}/feed.xml" rel="self" type="application/rss+xml"/>`;
+    <atom:link href="${host}/feed.xml" rel="self" type="application/rss+xml"/>`;
 
   products.forEach(p => {
     rss += `
     <item>
       <title>${p.name}</title>
-      <link>http://localhost:${PORT}/product/${p.id}</link>
+      <link>${host}/product/${p.id}</link>
       <description><![CDATA[${p.description}]]></description>
       <pubDate>${new Date(p.created_at).toUTCString()}</pubDate>
-      <guid>http://localhost:${PORT}/product/${p.id}</guid>
+      <guid>${host}/product/${p.id}</guid>
       <category>${p.category}</category>
     </item>`;
   });
