@@ -1,12 +1,9 @@
 services:
   - type: web
     name: chen-electronic
-    env: node
-    plan: free
+    runtime: node
     buildCommand: npm install
     startCommand: node server.js
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        scope: runtime
