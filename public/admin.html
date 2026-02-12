@@ -581,16 +581,22 @@
     async function editProduct(id) {
       try {
         const res = await fetch(`${API_URL}/products/${id}`);
-        const product = await res.json();
+        const data = await res.json();
+        const product = data.product;
+        
+        if (!product) {
+          showNotification('Product not found', 'error');
+          return;
+        }
         
         const form = document.getElementById('edit-form');
-        form.elements.id.value = product.id;
-        form.elements.name.value = product.name;
-        form.elements.price.value = product.price;
+        form.elements.id.value = product.id || '';
+        form.elements.name.value = product.name || '';
+        form.elements.price.value = product.price || '';
         form.elements.sale_price.value = product.sale_price || '';
-        form.elements.category.value = product.category;
+        form.elements.category.value = product.category || '';
         form.elements.brand.value = product.brand || '';
-        form.elements.stock.value = product.stock;
+        form.elements.stock.value = product.stock || '';
         form.elements.description.value = product.description || '';
         form.elements.image.value = product.image || '';
         form.elements.featured.checked = product.featured === 1;
@@ -598,6 +604,7 @@
         document.getElementById('edit-modal').classList.add('active');
       } catch (err) {
         console.error('Error loading product:', err);
+        showNotification('Failed to load product', 'error');
       }
     }
 
