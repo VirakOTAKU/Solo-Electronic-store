@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const { sendTelegramMessage, formatOrderNotification } = require('../telegram');
+const { sendTelegramMessage, formatOrderNotification, sendOrderWithImages } = require('../telegram');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
@@ -434,13 +434,12 @@ router.post('/orders', async (req, res) => {
 
     console.log('✓ [ORDER] Order created with ID:', result.lastID);
 
-    // Send Telegram notification
+    // Send Telegram notification with product images
     try {
       const order = await db.getAsync('SELECT * FROM orders WHERE id = ?', [result.lastID]);
       if (order) {
         console.log('📤 [TELEGRAM] Sending notification for order #' + result.lastID);
-        const message = formatOrderNotification(order);
-        await sendTelegramMessage(message);
+        await sendOrderWithImages(order);
         console.log('✓ [TELEGRAM] Notification sent successfully');
       }
     } catch (err) {
