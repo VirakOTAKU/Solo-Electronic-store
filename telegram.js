@@ -72,32 +72,33 @@ function formatOrderNotification(order) {
   try {
     const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
     const itemsList = items.map(item => 
-      `💳 <b>${item.name}</b>\n   Qty: ${item.quantity} | Price: $${(item.price * item.quantity).toFixed(2)}`
+      `💳 ${item.name}\nQty: ${item.quantity} | Price: $${(item.price * item.quantity).toFixed(2)}`
     ).join('\n\n');
 
     const message = `📦 <b>New Order Received!</b>
 
-━━━━━━━━━━━━━━━━━━━━━━━━
-🆔 <b>Order #${order.id}</b>
+<b>Order #${order.id}</b>
 
 👤 <b>Customer:</b> ${order.shipping_name}
-📧 <b>Email:</b> <code>${order.shipping_email}</code>
+📧 <b>Email:</b> ${order.shipping_email}
 📞 <b>Phone:</b> ${order.shipping_phone}
 
 📍 <b>Shipping Address:</b>
 ${order.shipping_address}
 ${order.shipping_city}, ${order.shipping_country} ${order.shipping_zip}
 
-━━━━━━━━━━━━━━━━━━━━━━━━
-🛒 <b>Items Ordered:</b>
+🛒 <b>Items:</b>
 ${itemsList}
 
-━━━━━━━━━━━━━━━━━━━━━━━━
 💰 <b>Total:</b> $${parseFloat(order.total).toFixed(2)}
 💳 <b>Payment:</b> ${order.payment_method.replace(/_/g, ' ').toUpperCase()}
 ✅ <b>Status:</b> ${order.status}
 📅 <b>Date:</b> ${new Date(order.created_at).toLocaleString()}`;
 
+    if (!message || message.trim().length === 0) {
+      throw new Error('Message is empty after formatting');
+    }
+    
     return message;
   } catch (error) {
     console.error('✗ [FORMAT] Error formatting order:', error.message);
