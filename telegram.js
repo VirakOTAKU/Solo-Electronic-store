@@ -70,31 +70,41 @@ async function sendTelegramMessage(message) {
 // Function to format order notification
 function formatOrderNotification(order) {
   try {
+    console.log('📋 [FORMAT] Formatting order data:', JSON.stringify(order).substring(0, 200));
+    
     const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
+    console.log('📦 [FORMAT] Parsed items:', items);
+    
+    if (!items || items.length === 0) {
+      throw new Error('No items in order');
+    }
+    
     const itemsList = items.map(item => 
-      `💳 ${item.name}\nQty: ${item.quantity} | Price: $${(item.price * item.quantity).toFixed(2)}`
+      `💳 ${item.name || 'Unknown'}\nQty: ${item.quantity || 0} | Price: $${((item.price || 0) * (item.quantity || 0)).toFixed(2)}`
     ).join('\n\n');
 
-    const message = `📦 <b>New Order Received!</b>
+    const message = `📦 New Order Received!
 
-<b>Order #${order.id}</b>
+Order #${order.id}
 
-👤 <b>Customer:</b> ${order.shipping_name}
-📧 <b>Email:</b> ${order.shipping_email}
-📞 <b>Phone:</b> ${order.shipping_phone}
+Customer: ${order.shipping_name || 'N/A'}
+Email: ${order.shipping_email || 'N/A'}
+Phone: ${order.shipping_phone || 'N/A'}
 
-📍 <b>Shipping Address:</b>
-${order.shipping_address}
-${order.shipping_city}, ${order.shipping_country} ${order.shipping_zip}
+Address:
+${order.shipping_address || 'N/A'}
+${order.shipping_city || 'N/A'}, ${order.shipping_country || 'N/A'} ${order.shipping_zip || 'N/A'}
 
-🛒 <b>Items:</b>
+Items:
 ${itemsList}
 
-💰 <b>Total:</b> $${parseFloat(order.total).toFixed(2)}
-💳 <b>Payment:</b> ${order.payment_method.replace(/_/g, ' ').toUpperCase()}
-✅ <b>Status:</b> ${order.status}
-📅 <b>Date:</b> ${new Date(order.created_at).toLocaleString()}`;
+Total: $${parseFloat(order.total || 0).toFixed(2)}
+Payment: ${(order.payment_method || 'N/A').replace(/_/g, ' ').toUpperCase()}
+Status: ${order.status || 'pending'}
+Date: ${new Date(order.created_at).toLocaleString()}`;
 
+    console.log('✓ [FORMAT] Message formatted successfully, length:', message.length);
+    
     if (!message || message.trim().length === 0) {
       throw new Error('Message is empty after formatting');
     }
@@ -102,6 +112,7 @@ ${itemsList}
     return message;
   } catch (error) {
     console.error('✗ [FORMAT] Error formatting order:', error.message);
+    console.error('✗ [FORMAT] Order object:', JSON.stringify(order));
     throw error;
   }
 }
