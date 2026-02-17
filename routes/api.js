@@ -405,43 +405,53 @@ router.post('/reviews', async (req, res) => {
 // ============ ORDERS ============
 // ============ ORDERS ============
 router.post('/orders', async (req, res) => {
-  const { user_id, items, total, shipping, payment_method } = req.body;
-  
-  if (!items || !total || !shipping) {
-    return res.status(400).json({ error: 'Missing required fields' });
-  }
-
-  const result = await db.runAsync(`
-    INSERT INTO orders (user_id, items, total, shipping_name, shipping_email, shipping_phone, 
-                       shipping_address, shipping_city, shipping_country, shipping_zip, payment_method)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `, [
-    user_id || null,
-    JSON.stringify(items),
-    total,
-    shipping.name,
-    shipping.email,
-    shipping.phone,
-    shipping.address,
-    shipping.city,
-    shipping.country,
-    shipping.zip,
-    payment_method
-  ]);
-
-  // Send Telegram notification
   try {
-    const order = await db.getAsync('SELECT * FROM orders WHERE id = ?', [result.lastID]);
-    if (order) {
-      const message = formatOrderNotification(order);
-      await sendTelegramMessage(message);
+    console.log('📦 [ORDER] Received order request:', JSON.stringify(req.body).substring(0, 200));
+    
+    const { user_id, items, total, shipping, payment_method } = req.body;
+    
+    if (!items || !total || !shipping) {
+      return res.status(400).json({ error: 'Missing required fields' });
     }
-  } catch (err) {
-    console.error('Failed to send Telegram notification:', err);
-    // Don't fail the order creation if Telegram notification fails
-  }
 
-  res.json({ success: true, order_id: result.lastID });
+    const result = await db.runAsync(`
+      INSERT INTO orders (user_id, items, total, shipping_name, shipping_email, shipping_phone, 
+                         shipping_address, shipping_city, shipping_country, shipping_zip, payment_method)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `, [
+      user_id || null,
+      JSON.stringify(items),
+      total,
+      shipping.name,
+      shipping.email,
+      shipping.phone,
+      shipping.address,
+      shipping.city,
+      shipping.country,
+      shipping.zip,
+      payment_method
+    ]);
+
+    console.log('✓ [ORDER] Order created with ID:', result.lastID);
+
+    // Send Telegram notification
+    try {
+      const order = await db.getAsync('SELECT * FROM orders WHERE id = ?', [result.lastID]);
+      if (order) {
+        console.log('📤 [TELEGRAM] Sending notification for order #' + result.lastID);
+        const message = formatOrderNotification(order);
+        await sendTelegramMessage(message);
+        console.log('✓ [TELEGRAM] Notification sent successfully');
+      }
+    } catch (err) {
+      console.error('✗ [TELEGRAM] Error sending notification:', err.message);
+    }
+
+    res.json({ success: true, order_id: result.lastID });
+  } catch (error) {
+    console.error('✗ [ORDER] Error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 router.get('/orders/:id', async (req, res) => {

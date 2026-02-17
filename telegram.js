@@ -7,12 +7,12 @@ const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 // Function to send message to Telegram group
 async function sendTelegramMessage(message) {
   if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
-    console.warn('Telegram credentials not configured');
+    console.warn('⚠️  [TELEGRAM] Missing credentials - Bot Token:', !!TELEGRAM_BOT_TOKEN, 'Chat ID:', !!TELEGRAM_CHAT_ID);
     return false;
   }
 
   try {
-    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+    console.log('📤 [TELEGRAM] Attempting to send message to chat:', TELEGRAM_CHAT_ID);
     
     const data = JSON.stringify({
       chat_id: TELEGRAM_CHAT_ID,
@@ -40,20 +40,21 @@ async function sendTelegramMessage(message) {
           try {
             const result = JSON.parse(responseData);
             if (result.ok) {
-              console.log('✓ Telegram message sent successfully');
+              console.log('✓ [TELEGRAM] Message sent successfully to chat', TELEGRAM_CHAT_ID);
               resolve(true);
             } else {
-              console.error('Telegram error:', result.description);
+              console.error('✗ [TELEGRAM] API error:', result.description);
               reject(new Error(result.description));
             }
           } catch (e) {
+            console.error('✗ [TELEGRAM] JSON parse error:', e.message);
             reject(e);
           }
         });
       });
 
       req.on('error', (error) => {
-        console.error('Telegram request error:', error);
+        console.error('✗ [TELEGRAM] Request error:', error.message);
         reject(error);
       });
 
@@ -61,19 +62,20 @@ async function sendTelegramMessage(message) {
       req.end();
     });
   } catch (error) {
-    console.error('Error sending Telegram message:', error);
+    console.error('✗ [TELEGRAM] Catch error:', error.message);
     return false;
   }
 }
 
 // Function to format order notification
 function formatOrderNotification(order) {
-  const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
-  const itemsList = items.map(item => 
-    `• <b>${item.name}</b> x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}`
-  ).join('\n');
+  try {
+    const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
+    const itemsList = items.map(item => 
+      `• <b>${item.name}</b> x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}`
+    ).join('\n');
 
-  const message = `
+    const message = `
 <b>📦 New Order Received!</b>
 
 <b>Order ID:</b> #${order.id}
@@ -95,7 +97,11 @@ ${itemsList}
 <b>Date:</b> ${new Date(order.created_at).toLocaleString()}
 `;
 
-  return message;
+    return message;
+  } catch (error) {
+    console.error('✗ [FORMAT] Error formatting order:', error.message);
+    throw error;
+  }
 }
 
 module.exports = {
