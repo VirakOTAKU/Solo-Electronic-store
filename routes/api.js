@@ -439,11 +439,14 @@ router.post('/orders', async (req, res) => {
       const order = await db.getAsync('SELECT * FROM orders WHERE id = ?', [result.lastID]);
       if (order) {
         console.log('📤 [TELEGRAM] Sending notification for order #' + result.lastID);
-        await sendOrderWithImages(order);
-        console.log('✓ [TELEGRAM] Notification sent successfully');
+        // Use the async function that handles images and text
+        sendOrderWithImages(order).catch(err => {
+          console.error('✗ [TELEGRAM] Error:', err.message);
+        });
+        console.log('✓ [TELEGRAM] Notification queued');
       }
     } catch (err) {
-      console.error('✗ [TELEGRAM] Error sending notification:', err.message);
+      console.error('✗ [TELEGRAM] Error queuing notification:', err.message);
     }
 
     res.json({ success: true, order_id: result.lastID });

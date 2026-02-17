@@ -110,32 +110,38 @@ module.exports = {
   formatOrderNotification,
   sendOrderWithImages: async function(order) {
     try {
-      // Send main order notification
+      // FIRST: Send main order notification (text) - most important
       const message = formatOrderNotification(order);
       await sendTelegramMessage(message);
+      console.log('✓ [TELEGRAM] Order message sent');
       
-      // Send product images
-      const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
-      for (const item of items) {
-        if (item.image) {
-          try {
-            // Construct full image URL
-            const imageUrl = item.image.startsWith('http') 
-              ? item.image 
-              : `${process.env.BASE_URL || 'https://chenelectronic.vercel.app'}${item.image}`;
-            
-            const caption = `📸 <b>${item.name}</b>\nQty: ${item.quantity}\nPrice: $${(item.price * item.quantity).toFixed(2)}`;
-            await sendProductImage(imageUrl, caption);
-            
-            // Add small delay between images
-            await new Promise(resolve => setTimeout(resolve, 500));
-          } catch (imgErr) {
-            console.error('✗ [TELEGRAM] Error sending product image:', imgErr.message);
+      // THEN: Try to send product images (optional, won't block if fails)
+      try {
+        const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
+        for (const item of items) {
+          if (item.image) {
+            try {
+              // Construct full image URL
+              const imageUrl = item.image.startsWith('http') 
+                ? item.image 
+                : `${process.env.BASE_URL || 'https://chenelectronic.vercel.app'}${item.image}`;
+              
+              const caption = `📸 <b>${item.name}</b>\nQty: ${item.quantity}\nPrice: $${(item.price * item.quantity).toFixed(2)}`;
+              await sendProductImage(imageUrl, caption);
+              
+              // Add small delay between images
+              await new Promise(resolve => setTimeout(resolve, 300));
+            } catch (imgErr) {
+              console.warn('⚠️  [TELEGRAM] Couldn\'t send image for ' + item.name + ':', imgErr.message);
+              // Continue with other images even if one fails
+            }
           }
         }
+      } catch (imgError) {
+        console.warn('⚠️  [TELEGRAM] Image sending failed, but main message was sent:', imgError.message);
       }
     } catch (error) {
-      console.error('✗ [TELEGRAM] Error sending order with images:', error.message);
+      console.error('✗ [TELEGRAM] Critical error sending order:', error.message);
       throw error;
     }
   }
